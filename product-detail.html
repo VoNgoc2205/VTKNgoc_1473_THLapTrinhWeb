@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Sản Phẩm - PetFood</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="header-row">
+                <a href="index.html" class="brand">
+                    <span class="brand-icon"><i class="fa fa-paw"></i></span>
+                    <span><strong>Pet</strong>Food</span>
+                </a>
+
+                <a href="index.html#products" class="btn btn-dark rounded-pill px-4 fw-semibold">
+                    <i class="fa fa-shopping-bag me-2"></i>Đặt hàng
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container-fluid px-4 px-lg-5">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Mở menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-center" id="mainMenu">
+                <ul class="navbar-nav gap-lg-3">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Trang Chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#products">Sản Phẩm</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="product-detail.html?id=1">Chi Tiết</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Liên Hệ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="detail-wrapper">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="back-link-wrap">
+                <a href="index.html#products" class="back-link">
+                    <span><i class="fa fa-arrow-left"></i></span>
+                    Quay lại danh sách sản phẩm
+                </a>
+            </div>
+
+            <section class="product-detail-card">
+                <div class="row g-5 align-items-start">
+                    <div class="col-lg-5">
+                        <img class="detail-main-img" id="mainProductImage" src="images/1.JPG" alt="Sản phẩm PetFood">
+                    </div>
+
+                    <div class="col-lg-7">
+                        <span class="product-tag" id="productCategory">Thức ăn cho chó</span>
+                        <h1 id="productName">Đồ chơi bóng nhiều màu</h1>
+                        <div class="rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-half-o"></i>
+                            <span id="productSold">4.8 | Đã bán 320</span>
+                        </div>
+                        <p class="detail-desc" id="productDesc">Đồ chơi cho thú cưng giúp giải trí và vận động.</p>
+                        <strong class="detail-price" id="productPrice">250.000đ</strong>
+
+                        <div class="quantity-row">
+                            <label>Số lượng</label>
+                            <input class="form-control" type="number" value="1" min="1">
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-3 mb-4">
+                            <button class="btn btn-dark btn-lg rounded-pill fw-semibold px-4">
+                                <i class="fa fa-cart-plus me-2"></i>Thêm vào giỏ
+                            </button>
+                            <button class="btn btn-outline-dark btn-lg rounded-pill fw-semibold px-4">Mua ngay</button>
+                        </div>
+
+                        <ul class="detail-benefits">
+                            <li><i class="fa fa-check"></i> Giao hàng nhanh trong ngày</li>
+                            <li><i class="fa fa-check"></i> Đổi trả nếu sản phẩm lỗi</li>
+                            <li><i class="fa fa-check"></i> Tư vấn sản phẩm miễn phí</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-description">
+                <h2>Mô tả sản phẩm</h2>
+                <p id="productLongDesc">Sản phẩm được chọn lọc kỹ, phù hợp nhu cầu chăm sóc thú cưng hằng ngày.</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer" id="contact">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h3>PetFood</h3>
+                    <p>Cửa hàng thức ăn và đồ dùng chất lượng cho thú cưng.</p>
+                </div>
+                <div class="col-md-4">
+                    <h3>Liên hệ</h3>
+                    <p><i class="fa fa-phone"></i> 0123456789</p>
+                    <p><i class="fa fa-envelope"></i> petfood@gmail.com</p>
+                </div>
+                <div class="col-md-4">
+                    <h3>Địa chỉ</h3>
+                    <p><i class="fa fa-map-marker"></i> TP. Hồ Chí Minh</p>
+                    <p>Mở cửa: 8:00 - 21:00</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        var products = {
+            "1": {
+                name: "Đồ chơi bóng nhiều màu",
+                category: "Thức ăn cho chó",
+                price: "250.000đ",
+                image: "images/1.JPG",
+                thumbs: ["images/1.JPG", "images/2.JPG", "images/3.JPG"],
+                desc: "Đồ chơi cho thú cưng giúp giải trí và vận động.",
+                longDesc: "Đồ chơi bóng nhiều màu giúp thú cưng vận động, giảm căng thẳng và tăng sự linh hoạt. Sản phẩm có màu sắc nổi bật, phù hợp cho chó mèo chơi hằng ngày.",
+                sold: "4.8 | Đã bán 320"
+            },
+            "2": {
+                name: "Bát Ăn Inox Chống Trượt",
+                category: "Đồ dùng",
+                price: "120.000đ",
+                image: "images/2.JPG",
+                thumbs: ["images/2.JPG", "images/1.JPG", "images/3.JPG"],
+                desc: "Bát ăn chắc chắn, dễ vệ sinh, phù hợp cho chó mèo.",
+                longDesc: "Bát ăn inox chống trượt có thiết kế bền, dễ vệ sinh và hạn chế xê dịch khi thú cưng ăn uống. Phù hợp dùng cho cả thức ăn khô và thức ăn mềm.",
+                sold: "4.9 | Đã bán 280"
+            },
+            "3": {
+                name: "Máy Cho Ăn Tự Động",
+                category: "Phụ kiện",
+                price: "650.000đ",
+                image: "images/3.JPG",
+                thumbs: ["images/3.JPG", "images/2.JPG", "images/5.jpg"],
+                desc: "Tiện lợi khi vắng nhà, giúp chia khẩu phần đều đặn.",
+                longDesc: "Máy cho ăn tự động giúp kiểm soát khẩu phần ăn cho thú cưng, đặc biệt tiện lợi khi chủ nuôi bận rộn hoặc vắng nhà trong ngày.",
+                sold: "4.7 | Đã bán 145"
+            },
+            "4": {
+                name: "Vòng Cổ Nhiều Màu",
+                category: "Đồ dùng",
+                price: "85.000đ",
+                image: "images/4.JPG",
+                thumbs: ["images/4.JPG", "images/1.JPG", "images/6.jpg"],
+                desc: "Chất liệu nhẹ, màu sắc đẹp, có chuông nhỏ dễ thương.",
+                longDesc: "Vòng cổ nhiều màu có chất liệu nhẹ, tạo cảm giác thoải mái cho thú cưng. Thiết kế có chuông nhỏ giúp dễ nhận biết vị trí của thú cưng trong nhà.",
+                sold: "4.8 | Đã bán 410"
+            },
+            "5": {
+                name: "Snack Thưởng Dinh Dưỡng",
+                category: "Snack",
+                price: "95.000đ",
+                image: "images/5.jpg",
+                thumbs: ["images/5.jpg", "images/6.jpg", "images/1.JPG"],
+                desc: "Phù hợp huấn luyện và thưởng cho thú cưng mỗi ngày.",
+                longDesc: "Snack thưởng dinh dưỡng có hương vị thơm ngon, thích hợp làm phần thưởng khi huấn luyện hoặc bổ sung bữa phụ cho chó mèo.",
+                sold: "4.8 | Đã bán 360"
+            },
+            "6": {
+                name: "Combo Thức Ăn Tiết Kiệm",
+                category: "Combo",
+                price: "210.000đ",
+                image: "images/6.jpg",
+                thumbs: ["images/6.jpg", "images/5.jpg", "images/2.JPG"],
+                desc: "Nhiều hương vị dễ ăn, phù hợp đổi bữa cho chó mèo.",
+                longDesc: "Combo thức ăn tiết kiệm gồm nhiều hương vị, giúp thú cưng đổi bữa dễ dàng. Phù hợp cho người nuôi muốn mua trọn gói với chi phí hợp lý.",
+                sold: "4.9 | Đã bán 250"
+            }
+        };
+
+        function getProductId() {
+            var params = new URLSearchParams(window.location.search);
+            return products[params.get("id")] ? params.get("id") : "1";
+        }
+
+        function renderProductDetail() {
+            var product = products[getProductId()];
+            var mainImage = document.getElementById("mainProductImage");
+
+            document.title = product.name + " - PetFood";
+            document.getElementById("productCategory").textContent = product.category;
+            document.getElementById("productName").textContent = product.name;
+            document.getElementById("productDesc").textContent = product.desc;
+            document.getElementById("productLongDesc").textContent = product.longDesc;
+            document.getElementById("productPrice").textContent = product.price;
+            document.getElementById("productSold").textContent = product.sold;
+
+            mainImage.src = product.image;
+            mainImage.alt = product.name;
+        }
+
+        renderProductDetail();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
