@@ -23,25 +23,24 @@ a {
 }
 
 .site-header {
+    overflow: hidden;
     background: var(--surface);
-    border-bottom: 1px solid var(--line);
+    border-bottom: 8px solid var(--bg);
 }
 
-.site-header .container-fluid {
+.header-top .container-fluid {
     min-height: 78px;
 }
 
 .header-row {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 24px;
-    width: 100%;
     min-height: 78px;
 }
 
 .brand {
-    justify-self: start;
     display: inline-flex;
     align-items: center;
     gap: 14px;
@@ -65,26 +64,19 @@ a {
     font-size: 24px;
 }
 
-.header-contact {
-    justify-self: center;
-    color: var(--muted);
-    font-size: 16px;
-}
-
-.header-contact i {
-    color: var(--accent);
-    margin-right: 6px;
-}
-
 .site-header .btn {
-    grid-column: 3;
-    justify-self: end;
     padding: 13px 26px;
     font-size: 16px;
 }
 
 .main-navbar {
     background: var(--dark);
+    min-height: 64px;
+    padding: 0;
+}
+
+.main-navbar .container-fluid {
+    justify-content: center;
 }
 
 .main-navbar .navbar-toggler {
@@ -155,7 +147,6 @@ a {
     height: 100%;
     object-fit: cover;
     object-position: center;
-    transform: none;
 }
 
 .service-section {
@@ -517,17 +508,18 @@ a {
 }
 
 @media (max-width: 576px) {
-    .site-header .container-fluid,
+    .header-top .container-fluid,
     .header-row {
         min-height: 68px;
     }
 
     .header-row {
-        grid-template-columns: 1fr auto;
+        gap: 14px;
     }
 
     .site-header .btn {
-        grid-column: auto;
+        padding: 10px 15px;
+        font-size: 13px;
     }
 
     .brand {
