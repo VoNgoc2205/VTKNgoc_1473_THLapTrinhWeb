@@ -1,0 +1,147 @@
+﻿@model IEnumerable<_1473_VTKNgoc_Buoi2.Models.Product>
+
+@using _1473_VTKNgoc_Buoi2.Repositories
+@inject ICategoryRepository CategoryRepository
+
+@{
+    ViewData["Title"] = "PetHome Store";
+}
+
+<div class="home-page">
+
+    <section class="banner">
+        <div class="banner-text">
+            <span>PET CARE STORE</span>
+
+            <h1>Cửa hàng dành cho thú cưng</h1>
+
+            <p>
+                PetHome đồng hành cùng bạn trong hành trình chăm sóc thú cưng với các sản phẩm chất lượng,
+                an toàn và phù hợp cho chó mèo.
+            </p>
+
+            <div class="banner-btn">
+                <a href="#products" class="btn-dark-custom">
+                    Khám phá ngay
+                </a>
+            </div>
+        </div>
+
+        <div class="banner-img">
+            <img src="/images/pet-banner.jpg" alt="PetHome Banner" />
+        </div>
+    </section>
+
+    <section class="feature-section">
+        <div class="feature-card">
+            <i class="fa fa-shield-dog"></i>
+            <b>Sản phẩm chọn lọc</b>
+            <p>Nguồn gốc rõ ràng.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fa fa-truck"></i>
+            <b>Giao hàng nhanh</b>
+            <p>Hỗ trợ giao hàng trong ngày.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fa fa-comments"></i>
+            <b>Tư vấn tận tâm</b>
+            <p>Gợi ý sản phẩm phù hợp.</p>
+        </div>
+    </section>
+
+    <section class="content-layout" id="products">
+
+        <aside class="sidebar">
+            <h3>
+                <i class="fa fa-layer-group"></i>
+                Danh mục
+            </h3>
+
+            <ul>
+                @foreach (var category in CategoryRepository.GetAllCategories())
+                {
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-paw"></i>
+                            @category.Name
+                        </a>
+                    </li>
+                }
+            </ul>
+
+            <hr />
+
+            <h4>
+                <i class="fa fa-gift"></i>
+                Ưu đãi
+            </h4>
+
+            <p>Giảm 10% cho đơn hàng đầu tiên.</p>
+        </aside>
+
+        <main class="product-area">
+            <div class="product-title">
+                <h2>Sản phẩm nổi bật</h2>
+                <span>@Model.Count() sản phẩm</span>
+            </div>
+
+            <div class="product-grid">
+                @foreach (var product in Model)
+                {
+                    <div class="product-card">
+
+                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                        {
+                            <img src="@product.ImageUrl" alt="@product.Name" />
+                        }
+                        else
+                        {
+                            <img src="/images/no-image.png" alt="No Image" />
+                        }
+
+                        <div class="product-info">
+                            <h4>@product.Name</h4>
+
+                            <p class="price">
+                                @product.Price.ToString("N0") VNĐ
+                            </p>
+
+                            <p class="desc">
+                                @product.Description
+                            </p>
+
+                            <div class="product-actions">
+                                <a asp-action="Display"
+                                   asp-route-id="@product.Id"
+                                   class="btn-view">
+                                    <i class="fa fa-eye"></i>
+                                    Xem
+                                </a>
+
+                                <a asp-action="Update"
+                                   asp-route-id="@product.Id"
+                                   class="btn-edit">
+                                    <i class="fa fa-pen"></i>
+                                    Sửa
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@product.Id"
+                                   class="btn-delete">
+                                    <i class="fa fa-trash"></i>
+                                    Xóa
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </main>
+
+    </section>
+
+</div>

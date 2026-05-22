@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - PetHome Store</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <link rel="stylesheet" href="~/css/store.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    <header class="store-header">
+        <div class="store-header-container">
+
+            <a class="store-logo" asp-controller="Product" asp-action="Index">
+                <i class="fa-solid fa-paw"></i>
+                PetHome
+            </a>
+
+            <nav class="store-menu">
+
+                <a asp-controller="Product" asp-action="Index">
+                    <i class="fa fa-house"></i> Trang chủ
+                </a>
+
+                <a asp-controller="Category" asp-action="Index">
+                    <i class="fa fa-list"></i> Quản lý danh mục
+                </a>
+
+                <a asp-controller="Product" asp-action="Add">
+                    <i class="fa fa-plus"></i> Thêm sản phẩm
+                </a>
+
+                <a href="#footer">
+                    <i class="fa fa-phone"></i> Liên hệ
+                </a>
+
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="store-footer" id="footer">
+        <div>
+            <h4>
+                <i class="fa-solid fa-paw"></i>
+                PetHome Store
+            </h4>
+
+            <p>Cửa hàng phụ kiện, thức ăn và sản phẩm chăm sóc thú cưng.</p>
+
+            <p>
+                <i class="fa fa-phone"></i> 0123456789
+                |
+                <i class="fa fa-envelope"></i> pethome@gmail.com
+            </p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

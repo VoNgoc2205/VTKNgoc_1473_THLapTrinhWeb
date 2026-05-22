@@ -1,0 +1,116 @@
+﻿@model _1473_VTKNgoc_Buoi2.Models.Product
+
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+}
+
+<div class="detail-wrapper">
+
+    <div class="detail-card">
+
+        <div class="detail-image">
+
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl">
+            }
+            else
+            {
+                <img src="/images/no-image.png">
+            }
+
+        </div>
+
+
+        <div class="detail-content">
+
+            <span class="product-badge">
+
+                <i class="fa fa-paw"></i>
+
+                PET PRODUCT
+
+            </span>
+
+            <h1>@Model.Name</h1>
+
+            <div class="detail-price">
+
+                @Model.Price.ToString("N0") VNĐ
+
+            </div>
+
+            <div class="detail-desc">
+
+                <h5>
+
+                    <i class="fa fa-align-left"></i>
+
+                    Mô tả sản phẩm
+
+                </h5>
+
+                <p>
+
+                    @Model.Description
+
+                </p>
+
+            </div>
+
+            <div class="detail-feature">
+
+                <div>
+
+                    <i class="fa fa-truck"></i>
+
+                    Giao hàng nhanh
+
+                </div>
+
+                <div>
+
+                    <i class="fa fa-shield"></i>
+
+                    Bảo đảm chất lượng
+
+                </div>
+
+                <div>
+
+                    <i class="fa fa-heart"></i>
+
+                    An toàn cho thú cưng
+
+                </div>
+
+            </div>
+
+            <div class="detail-buttons">
+
+                <a asp-action="Index"
+                   class="btn-back">
+
+                    <i class="fa fa-arrow-left"></i>
+
+                    Quay lại
+
+                </a>
+
+                <a asp-action="Update"
+                   asp-route-id="@Model.Id"
+                   class="btn-edit">
+
+                    <i class="fa fa-pen"></i>
+
+                    Chỉnh sửa
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

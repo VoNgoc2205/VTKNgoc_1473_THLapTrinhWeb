@@ -1,0 +1,86 @@
+﻿@model _1473_VTKNgoc_Buoi2.Models.Category
+
+@{
+    ViewData["Title"] = "Thêm danh mục";
+}
+
+<div class="category-add-wrapper">
+
+    <div class="category-add-card">
+
+        <div class="category-left">
+
+            <span class="category-add-badge">
+                <i class="fa fa-layer-group"></i>
+                CATEGORY
+            </span>
+
+            <h1>Thêm danh mục</h1>
+
+            <p>
+                Tạo danh mục mới để phân loại sản phẩm trong cửa hàng PetHome.
+            </p>
+
+            <img src="/images/category-banner.png"
+                 class="category-banner"
+                 alt="Category" />
+
+        </div>
+
+
+        <div class="category-right">
+
+            <h2>
+                <i class="fa fa-folder-plus"></i>
+                Thông tin danh mục
+            </h2>
+
+            <form asp-action="Add" method="post">
+
+                <div asp-validation-summary="All"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="form-item">
+
+                    <label asp-for="Name">
+
+                        <i class="fa fa-tag"></i>
+
+                        Tên danh mục
+
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control"
+                           placeholder="Ví dụ: Thức ăn cho chó" />
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button type="submit"
+                            class="btn-save">
+
+                        <i class="fa fa-plus"></i>
+                        Thêm danh mục
+
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn-back">
+
+                        <i class="fa fa-arrow-left"></i>
+                        Quay lại
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

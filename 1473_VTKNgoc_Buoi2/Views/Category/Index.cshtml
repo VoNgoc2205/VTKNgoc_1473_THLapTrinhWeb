@@ -1,0 +1,106 @@
+﻿@model IEnumerable<_1473_VTKNgoc_Buoi2.Models.Category>
+
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+}
+
+<div class="category-wrapper">
+
+    <div class="category-top">
+
+        <div>
+            <span class="category-tag">
+                <i class="fa fa-layer-group"></i>
+                CATEGORY
+            </span>
+
+            <h1>Quản lý danh mục</h1>
+
+            <p>
+                Quản lý danh sách danh mục sản phẩm của cửa hàng PetHome
+            </p>
+        </div>
+
+        <a asp-action="Add" class="btn-category-add">
+            <i class="fa fa-plus"></i>
+            Thêm danh mục
+        </a>
+
+    </div>
+
+
+    <div class="category-card">
+
+        <table class="category-table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Danh mục</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>
+                            <span class="category-id">
+                                #@item.Id
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <div class="category-name">
+
+                                <div class="category-icon">
+                                    <i class="fa fa-paw"></i>
+                                </div>
+
+                                @item.Name
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <div class="category-action">
+
+                                <a asp-action="Update"
+                                   asp-route-id="@item.Id"
+                                   class="btn-category-edit">
+
+                                    <i class="fa fa-pen"></i>
+                                    Sửa
+
+                                </a>
+
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn-category-delete">
+
+                                    <i class="fa fa-trash"></i>
+                                    Xóa
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

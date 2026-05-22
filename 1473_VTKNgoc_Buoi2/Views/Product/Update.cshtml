@@ -1,0 +1,204 @@
+﻿@model _1473_VTKNgoc_Buoi2.Models.Product
+
+@{
+    ViewData["Title"] = "Cập nhật sản phẩm";
+}
+
+<div class="update-page">
+
+    <div class="update-card">
+
+        <div class="update-left">
+
+            <span class="update-badge">
+
+                <i class="fa fa-pen"></i>
+
+                EDIT PRODUCT
+
+            </span>
+
+            <h1>Cập nhật sản phẩm</h1>
+
+            <p>
+
+                Chỉnh sửa thông tin và thay đổi ảnh.
+
+            </p>
+
+            <img id="previewImage"
+                 src="@(
+string.IsNullOrEmpty(Model.ImageUrl)
+? "/images/no-image.png"
+: Model.ImageUrl
+)">
+
+        </div>
+
+
+        <div class="update-right">
+
+            <h2>Thông tin sản phẩm</h2>
+
+            <form asp-action="Update"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <input type="hidden"
+                       asp-for="ImageUrl" />
+
+                <div class="form-item">
+
+                    <label>
+
+                        <i class="fa fa-tag"></i>
+
+                        Tên sản phẩm
+
+                    </label>
+
+                    <input asp-for="Name" />
+
+                </div>
+
+
+                <div class="form-item">
+
+                    <label>
+
+                        <i class="fa fa-money-bill"></i>
+
+                        Giá
+
+                    </label>
+
+                    <input asp-for="Price" />
+
+                </div>
+
+
+                <div class="form-item">
+
+                    <label>
+
+                        <i class="fa fa-align-left"></i>
+
+                        Mô tả
+
+                    </label>
+
+<textarea asp-for="Description"
+          rows="4">
+
+</textarea>
+
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="CategoryId">
+                        <i class="fa fa-list"></i> Danh mục
+                    </label>
+
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories">
+                        <option value="">-- Chọn danh mục --</option>
+                    </select>
+
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-item">
+
+                    <label>
+
+                        <i class="fa fa-image"></i>
+
+                        Đổi ảnh
+
+                    </label>
+
+                    <input type="file"
+                           name="imageUrlFile"
+                           id="imageUrlFile" />
+
+                </div>
+
+
+                <div class="update-actions">
+
+                    <button type="submit">
+
+                        <i class="fa fa-save"></i>
+
+                        Cập nhật
+
+                    </button>
+
+                    <a asp-action="Index">
+
+                        <i class="fa fa-arrow-left"></i>
+
+                        Quay lại
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        document
+            .getElementById(
+                "imageUrlFile"
+            )
+
+            .addEventListener(
+                "change",
+
+                function (e) {
+
+                    const file =
+                        e.target.files[0];
+
+                    if (file) {
+
+                        const reader =
+                            new FileReader();
+
+                        reader.onload =
+                            function (x) {
+
+                                document
+                                    .getElementById(
+                                        "previewImage"
+                                    )
+
+                                    .src =
+                                    x.target.result;
+
+                            }
+
+                        reader
+                            .readAsDataURL(
+                                file
+                            );
+
+                    }
+
+                });
+
+    </script>
+
+}

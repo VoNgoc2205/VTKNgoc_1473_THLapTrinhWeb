@@ -1,0 +1,65 @@
+﻿@model _1473_VTKNgoc_Buoi2.Models.Category
+
+@{
+    ViewData["Title"] = "Xóa danh mục";
+}
+
+<div class="delete-wrapper">
+
+    <div class="delete-card">
+
+        <div class="delete-icon">
+            <i class="fa fa-trash"></i>
+        </div>
+
+        <span class="delete-badge">
+            CATEGORY DELETE
+        </span>
+
+        <h1>Xóa danh mục?</h1>
+
+        <p>
+            Hành động này không thể hoàn tác.<br />
+            Bạn có chắc muốn xóa danh mục bên dưới?
+        </p>
+
+        <div class="delete-category-box">
+
+            <small>Tên danh mục</small>
+
+            <h3>
+                <i class="fa fa-paw"></i>
+                @Model.Name
+            </h3>
+
+        </div>
+
+        <form asp-action="DeleteConfirmed" method="post">
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="delete-actions">
+
+                <button type="submit"
+                        class="btn-confirm-delete">
+
+                    <i class="fa fa-trash"></i>
+                    Xóa danh mục
+
+                </button>
+
+                <a asp-action="Index"
+                   class="btn-cancel-delete">
+
+                    <i class="fa fa-arrow-left"></i>
+                    Quay lại
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
