@@ -1,0 +1,143 @@
+﻿@model _1473_VTKNgoc_Buoi2.Models.Product
+
+@{
+    ViewData["Title"] = "Thêm sản phẩm";
+}
+
+<div class="add-product-page">
+
+    <div class="add-product-wrapper">
+
+        <div class="add-product-left">
+            <span class="add-badge">
+                <i class="fa-solid fa-paw"></i> PET PRODUCT
+            </span>
+
+            <h1>Thêm sản phẩm thú cưng</h1>
+
+            <p>
+                Quản lý sản phẩm cho cửa hàng PetHome: thức ăn, phụ kiện,
+                đồ chơi và sản phẩm chăm sóc thú cưng.
+            </p>
+
+            <div class="preview-box">
+
+                <img id="previewImage"
+                     src="/images/no-image.png"
+                     alt="Preview">
+
+                <p id="previewText">
+
+                    Chưa chọn ảnh
+
+                </p>
+
+            </div>
+        </div>
+
+        <div class="add-product-right">
+            <h2>Thông tin sản phẩm</h2>
+
+            <form asp-action="Add" enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="form-item">
+                    <label asp-for="Name">
+                        <i class="fa fa-tag"></i> Tên sản phẩm
+                    </label>
+                    <input asp-for="Name" placeholder="Nhập tên sản phẩm..." />
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="Price">
+                        <i class="fa fa-money-bill"></i> Giá
+                    </label>
+                    <input asp-for="Price" placeholder="Ví dụ: 250000" />
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="Description">
+                        <i class="fa fa-align-left"></i> Mô tả
+                    </label>
+                    <textarea asp-for="Description" rows="4" placeholder="Nhập mô tả sản phẩm..."></textarea>
+                </div>
+
+                <div class="form-item">
+                    <label asp-for="CategoryId">
+                        <i class="fa fa-list"></i> Danh mục
+                    </label>
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories">
+                        <option value="">-- Chọn danh mục --</option>
+                    </select>
+                </div>
+
+                <div class="form-item">
+                    <label>
+                        <i class="fa fa-image"></i> Ảnh sản phẩm
+                    </label>
+                    <input type="file" name="imageUrl" />
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit">
+                        <i class="fa fa-plus"></i> Thêm sản phẩm
+                    </button>
+
+                    <a asp-action="Index">
+                        <i class="fa fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        document
+            .querySelector(
+                'input[name="imageUrl"]'
+            )
+
+            .addEventListener(
+                'change',
+
+                function (e) {
+
+                    const file = e.target.files[0];
+
+                    if (file) {
+
+                        const reader =
+                            new FileReader();
+
+                        reader.onload =
+                            function (x) {
+
+                                document
+                                    .getElementById(
+                                        'previewImage'
+                                    )
+                                    .src = x.target.result;
+
+                                document
+                                    .getElementById(
+                                        'previewText'
+                                    )
+                                    .innerHTML = file.name;
+
+                            };
+
+                        reader.readAsDataURL(file);
+
+                    }
+
+                });
+
+    </script>
+
+}

@@ -1,0 +1,40 @@
+﻿@model _1473_VTKNgoc_Buoi2.Models.Product
+
+@{
+    ViewData["Title"] = "Xóa sản phẩm";
+}
+
+<div class="delete-page">
+    <div class="delete-card">
+
+        <div class="delete-icon">
+            <i class="fa fa-trash"></i>
+        </div>
+
+        <h1>Xóa sản phẩm?</h1>
+        <p>Bạn có chắc chắn muốn xóa sản phẩm này khỏi cửa hàng PetHome không?</p>
+
+        <div class="delete-product">
+            <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image.png" : Model.ImageUrl)" />
+
+            <div>
+                <h3>@Model.Name</h3>
+                <h4>@Model.Price.ToString("N0") VNĐ</h4>
+                <p>@Model.Description</p>
+            </div>
+        </div>
+
+        <form asp-action="DeleteConfirmed" method="post" class="delete-actions">
+            <input type="hidden" asp-for="Id" />
+
+            <button type="submit" class="btn-confirm-delete">
+                <i class="fa fa-trash"></i> Xóa sản phẩm
+            </button>
+
+            <a asp-action="Index" class="btn-cancel-delete">
+                <i class="fa fa-arrow-left"></i> Hủy
+            </a>
+        </form>
+
+    </div>
+</div>
