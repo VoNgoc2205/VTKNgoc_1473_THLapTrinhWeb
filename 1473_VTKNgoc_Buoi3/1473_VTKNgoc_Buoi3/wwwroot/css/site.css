@@ -2515,6 +2515,25 @@ a {
     font-weight: 800;
 }
 
+.upload-drop {
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-drop.has-preview > span,
+.upload-drop.has-preview > strong,
+.upload-drop.has-preview > small {
+    display: none;
+}
+
+.upload-preview {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .upload-mini {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -3694,6 +3713,14 @@ body {
     flex: 1;
 }
 
+.shop-page {
+    padding-bottom: 64px;
+}
+
+.admin-page {
+    padding-bottom: 56px;
+}
+
 .shop-hero {
     margin-top: 24px;
 }
@@ -3790,6 +3817,47 @@ body {
 .category-filter-card button {
     min-width: 88px;
     padding: 0 18px;
+}
+
+.pet-footer {
+    padding-top: 46px;
+}
+
+.pet-footer .container {
+    gap: 44px;
+}
+
+.footer-brand strong {
+    margin-bottom: 12px;
+}
+
+.footer-brand p,
+.footer-col p,
+.footer-col a {
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.footer-socials {
+    margin-top: 14px;
+}
+
+.footer-socials span {
+    width: 32px;
+    height: 32px;
+}
+
+.footer-col {
+    gap: 8px;
+}
+
+.footer-col h4 {
+    margin-bottom: 10px;
+}
+
+.footer-bottom {
+    min-height: 56px;
+    padding: 16px 20px;
 }
 
 @media (max-width: 980px) {
