@@ -1,0 +1,55 @@
+@model _1473_VTKNgoc_Buoi3.Models.Product
+
+@{
+    var isService = ViewBag.Context == "Service";
+    var itemLabel = isService ? "dịch vụ" : "sản phẩm";
+    var routeType = isService ? "service" : null;
+    ViewData["Title"] = $"Chi tiết {itemLabel}";
+}
+
+<section class="product-detail-page">
+    <nav class="breadcrumb-line">
+        <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+        <span>/</span>
+        <a asp-action="@(isService ? "Services" : "Index")">@(isService ? "Dịch vụ" : "Cửa hàng")</a>
+        <span>/</span>
+        <strong>@Model.Name</strong>
+    </nav>
+
+    <section class="product-detail-hero">
+        <div class="product-detail-gallery">
+            <div class="product-main-photo">
+                @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" />
+                }
+                else
+                {
+                    <span class="image-placeholder">Chưa có ảnh</span>
+                }
+            </div>
+        </div>
+
+        <aside class="product-detail-info">
+            <span class="product-status">Đang hiển thị</span>
+            <h1>@Model.Name</h1>
+            <p class="detail-category">Danh mục: @(Model.Category?.Name ?? "Chưa phân loại")</p>
+            <div class="detail-product-price">@Model.Price.ToString("N0") VNĐ</div>
+            <div class="detail-desc-box">
+                <h2>Mô tả</h2>
+                <p>@Model.Description</p>
+            </div>
+            <div class="detail-info-grid">
+                <div><span>Mã</span><strong>#@Model.Id</strong></div>
+                <div><span>Tình trạng</span><strong>@(isService ? "Có thể đặt lịch" : "Còn hàng")</strong></div>
+                <div><span>Đối tượng</span><strong>Chó / Mèo</strong></div>
+                <div><span>Tư vấn</span><strong>Miễn phí</strong></div>
+            </div>
+            <div class="detail-admin-actions">
+                <a class="edit-product-btn" asp-action="Update" asp-route-id="@Model.Id" asp-route-type="@routeType">Sửa @itemLabel</a>
+                <a class="delete-product-btn" asp-action="Delete" asp-route-id="@Model.Id" asp-route-type="@routeType">Xóa @itemLabel</a>
+                <a class="back-product-btn" asp-action="@(isService ? "Services" : "Index")">Quay lại</a>
+            </div>
+        </aside>
+    </section>
+</section>

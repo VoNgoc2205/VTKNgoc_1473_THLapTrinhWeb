@@ -1,0 +1,24 @@
+@model _1473_VTKNgoc_Buoi3.Models.Category
+
+@{
+    ViewData["Title"] = "Xóa danh mục";
+}
+
+<section class="admin-page">
+    <main class="admin-shell">
+        <section class="delete-admin-card">
+            <div class="delete-warning">!</div>
+            <h1>Xóa danh mục này?</h1>
+            <p>Danh mục sẽ bị xóa khỏi hệ thống quản lý. Hãy chắc chắn rằng không còn dữ liệu quan trọng đang sử dụng danh mục này.</p>
+            <div class="confirm-category admin-category-delete-box">
+                <small>Danh mục</small>
+                <strong>@Model.Name</strong>
+            </div>
+            <form asp-action="DeleteConfirmed" method="post" class="delete-admin-actions">
+                <input type="hidden" asp-for="Id" />
+                <a asp-action="Index">Hủy bỏ</a>
+                <button type="submit">Xóa danh mục</button>
+            </form>
+        </section>
+    </main>
+</section>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PetLounge</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/_1473_VTKNgoc_Buoi3.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg pet-navbar">
+            <div class="container">
+                <a class="navbar-brand pet-brand" asp-area="" asp-controller="Home" asp-action="Index">PetLounge</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Mở menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav mx-auto align-items-lg-center gap-lg-4">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Product" asp-action="Index">Mua sắm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Product" asp-action="Services">Dịch vụ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Category" asp-action="Index">Danh mục</a>
+                        </li>
+                    </ul>
+                    <form class="nav-search" role="search" asp-controller="Product" asp-action="Index" method="get">
+                        <span>Tìm</span>
+                        <input name="q" type="search" value="@ViewBag.Search" placeholder="Tìm sản phẩm hoặc dịch vụ..." aria-label="Tìm kiếm" />
+                    </form>
+                    <div class="nav-tools">
+                        <a class="nav-tool" asp-area="" asp-controller="Product" asp-action="Add" aria-label="Thêm sản phẩm">+</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="page-shell">
+        <main role="main" class="site-main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="pet-footer">
+        <div class="container">
+            <div class="footer-brand">
+                <strong>PetLounge</strong>
+                <p>Chăm sóc thú cưng toàn diện với sản phẩm, dịch vụ và thông tin quản lý rõ ràng.</p>
+                <div class="footer-socials">
+                    <span>FB</span>
+                    <span>IG</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Khám phá</h4>
+                <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+                <a asp-controller="Product" asp-action="Index">Cửa hàng</a>
+                <a asp-controller="Product" asp-action="Services">Dịch vụ</a>
+                <a asp-controller="Category" asp-action="Index">Danh mục</a>
+            </div>
+            <div class="footer-col">
+                <h4>Quản lý</h4>
+                <a asp-controller="Product" asp-action="Add">Thêm sản phẩm</a>
+                <a asp-controller="Product" asp-action="Add" asp-route-type="service">Thêm dịch vụ</a>
+                <a asp-controller="Category" asp-action="Add">Thêm danh mục</a>
+            </div>
+            <div class="footer-col">
+                <h4>Liên hệ</h4>
+                <p>Thành phố Hồ Chí Minh</p>
+                <p>1900 123 456</p>
+                <p>hello@petlounge.vn</p>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2026 PetLounge. Nâng niu từng bước chân nhỏ.</div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

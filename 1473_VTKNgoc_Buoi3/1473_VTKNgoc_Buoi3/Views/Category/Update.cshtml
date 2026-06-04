@@ -1,0 +1,46 @@
+@model _1473_VTKNgoc_Buoi3.Models.Category
+
+@{
+    ViewData["Title"] = "Cập nhật danh mục";
+}
+
+<section class="admin-page">
+    <main class="admin-shell">
+        <form asp-action="Update" asp-route-id="@Model.Id" method="post" class="category-form-layout">
+            <input asp-for="Id" type="hidden" />
+            <div class="category-form-main">
+                <div class="admin-breadcrumb"><a asp-action="Index">Danh mục</a><span>/</span><strong>Chỉnh sửa</strong></div>
+                <h1>Chỉnh Sửa Danh Mục: <span>@Model.Name</span></h1>
+                <p>Cập nhật tên hiển thị của danh mục trong hệ thống.</p>
+
+                <section class="admin-card">
+                    <h2>Thông tin danh mục</h2>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="admin-field full">
+                        <label asp-for="Name">Tên danh mục</label>
+                        <input asp-for="Name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="category-form-side">
+                <section class="action-card">
+                    <h2>Thao tác</h2>
+                    <button type="submit">Cập nhật</button>
+                    <a asp-action="Index">Quay lại danh sách</a>
+                    <a class="delete-action" asp-action="Delete" asp-route-id="@Model.Id">Xóa danh mục</a>
+                </section>
+                <section class="metric-card">
+                    <h3>Thống kê</h3>
+                    <div><span>Số mục</span><strong>@(Model.Products?.Count ?? 0)</strong></div>
+                    <div><span>Mã</span><strong>#@Model.Id</strong></div>
+                </section>
+            </aside>
+        </form>
+    </main>
+</section>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

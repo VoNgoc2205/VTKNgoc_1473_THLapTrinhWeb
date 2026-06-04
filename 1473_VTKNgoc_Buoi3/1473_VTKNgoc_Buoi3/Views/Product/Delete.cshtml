@@ -1,0 +1,39 @@
+@model _1473_VTKNgoc_Buoi3.Models.Product
+
+@{
+    var isService = ViewBag.Context == "Service";
+    var itemLabel = isService ? "dịch vụ" : "sản phẩm";
+    var routeType = isService ? "service" : null;
+    ViewData["Title"] = $"Xóa {itemLabel}";
+}
+
+<section class="admin-page">
+    <main class="admin-shell">
+        <section class="delete-admin-card">
+            <div class="delete-warning">!</div>
+            <h1>Xóa @itemLabel này?</h1>
+            <p>Thao tác này sẽ xóa @itemLabel khỏi hệ thống. Hãy kiểm tra kỹ trước khi xác nhận.</p>
+            <div class="delete-admin-product">
+                @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" />
+                }
+                else
+                {
+                    <div class="delete-empty-image"></div>
+                }
+                <div>
+                    <span>@itemLabel</span>
+                    <h2>@Model.Name</h2>
+                    <p>@Model.Description</p>
+                    <strong>@Model.Price.ToString("N0") VNĐ</strong>
+                </div>
+            </div>
+            <form asp-action="DeleteConfirmed" asp-route-type="@routeType" method="post" class="delete-admin-actions">
+                <input type="hidden" asp-for="Id" />
+                <a asp-action="Update" asp-route-id="@Model.Id" asp-route-type="@routeType">Quay lại</a>
+                <button type="submit">Xóa @itemLabel</button>
+            </form>
+        </section>
+    </main>
+</section>

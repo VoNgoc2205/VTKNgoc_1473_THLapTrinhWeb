@@ -1,0 +1,112 @@
+@model IEnumerable<_1473_VTKNgoc_Buoi3.Models.Product>
+
+@{
+    var isService = ViewBag.Context == "Service";
+    var products = Model.ToList();
+    var itemLabel = isService ? "dịch vụ" : "sản phẩm";
+    var title = isService ? "Quản lý dịch vụ PetLounge" : "Danh sách sản phẩm PetLounge";
+    var subtitle = isService
+        ? "Theo dõi, tìm kiếm, thêm, sửa và xóa các dịch vụ chăm sóc thú cưng."
+        : "Theo dõi, tìm kiếm, thêm, sửa và xóa sản phẩm trong cửa hàng.";
+    var addRoute = isService ? "service" : null;
+    var indexAction = isService ? "Services" : "Index";
+    ViewData["Title"] = title;
+}
+
+<section class="shop-page">
+    <section class="shop-hero">
+        <img src="~/images/pet-banner.jpg" alt="@title" />
+        <div class="shop-hero-copy">
+            <span>@(isService ? "Quản lý dịch vụ" : "Quản lý sản phẩm")</span>
+            <h1>@title</h1>
+            <p>@subtitle</p>
+            <a asp-controller="Product" asp-action="Add" asp-route-type="@addRoute">Thêm @itemLabel</a>
+        </div>
+    </section>
+
+    <div class="shop-layout">
+        <aside class="filter-panel">
+            <form asp-action="@indexAction" method="get">
+                <h2>Bộ lọc</h2>
+                <div class="filter-group">
+                    <h3>Từ khóa</h3>
+                    <input class="filter-input" name="q" value="@ViewBag.Search" placeholder="Nhập tên hoặc mô tả..." />
+                </div>
+                <div class="filter-group">
+                    <h3>Danh mục</h3>
+                    <select class="filter-input" name="categoryId" asp-items="ViewBag.Categories">
+                        <option value="">Tất cả danh mục</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <h3>Khoảng giá</h3>
+                    <input class="filter-input" name="minPrice" type="number" value="@ViewBag.MinPrice" placeholder="Giá từ" />
+                    <input class="filter-input" name="maxPrice" type="number" value="@ViewBag.MaxPrice" placeholder="Giá đến" />
+                </div>
+                <div class="filter-group">
+                    <h3>Sắp xếp</h3>
+                    <select class="filter-input" name="sort">
+                        <option value="">Mới cập nhật</option>
+                        <option value="price-asc">Giá thấp đến cao</option>
+                        <option value="price-desc">Giá cao đến thấp</option>
+                        <option value="name">Tên A-Z</option>
+                    </select>
+                </div>
+                <button type="submit">Áp dụng bộ lọc</button>
+                <a class="reset-filter-link" asp-action="@indexAction">Xóa bộ lọc</a>
+            </form>
+        </aside>
+
+        <section class="shop-results">
+            <div class="results-toolbar">
+                <span>@products.Count @itemLabel trong hệ thống</span>
+                <div class="results-actions">
+                    <a class="add-product-link" asp-action="Add" asp-route-type="@addRoute">Thêm @itemLabel</a>
+                </div>
+            </div>
+
+            @if (!products.Any())
+            {
+                <div class="empty-state">
+                    <h2>Chưa có @itemLabel phù hợp</h2>
+                    <p>Hãy thử đổi bộ lọc hoặc thêm @itemLabel mới vào hệ thống.</p>
+                    <a asp-action="Add" asp-route-type="@addRoute">Thêm @itemLabel</a>
+                </div>
+            }
+            else
+            {
+                <div class="shop-grid">
+                    @foreach (var product in products)
+                    {
+                        <article class="shop-card">
+                            <div class="shop-badge">#@product.Id</div>
+                            <a asp-action="Display" asp-route-id="@product.Id" asp-route-type="@addRoute" class="shop-card-image">
+                                @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl" alt="@product.Name" />
+                                }
+                                else
+                                {
+                                    <span class="image-placeholder">Chưa có ảnh</span>
+                                }
+                            </a>
+                            <div class="shop-card-body">
+                                <small>Danh mục: @(product.Category?.Name ?? "Chưa phân loại")</small>
+                                <h2>@product.Name</h2>
+                                <p>@product.Description</p>
+                                <div class="shop-card-bottom">
+                                    <strong>@product.Price.ToString("N0") VNĐ</strong>
+                                </div>
+                                <div class="shop-card-actions">
+                                    <a asp-action="Display" asp-route-id="@product.Id" asp-route-type="@addRoute">Chi tiết</a>
+                                    <a asp-action="Update" asp-route-id="@product.Id" asp-route-type="@addRoute">Sửa</a>
+                                    <a class="danger" asp-action="Delete" asp-route-id="@product.Id" asp-route-type="@addRoute">Xóa</a>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+</section>

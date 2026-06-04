@@ -1,0 +1,88 @@
+@model _1473_VTKNgoc_Buoi3.Models.Product
+
+@{
+    var isService = ViewBag.Context == "Service";
+    var itemLabel = isService ? "dịch vụ" : "sản phẩm";
+    var routeType = isService ? "service" : null;
+    ViewData["Title"] = $"Sửa {itemLabel}";
+}
+
+<section class="admin-page">
+    <main class="admin-shell">
+        <form asp-action="Update" asp-route-id="@Model.Id" asp-route-type="@routeType" method="post" enctype="multipart/form-data">
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="ImageUrl" type="hidden" />
+
+            <div class="edit-heading">
+                <div>
+                    <div class="admin-breadcrumb">
+                        <a asp-action="@(isService ? "Services" : "Index")">@(isService ? "Dịch vụ" : "Sản phẩm")</a>
+                        <span>/</span>
+                        <strong>Chỉnh sửa</strong>
+                    </div>
+                    <h1>Chỉnh sửa @itemLabel: <span>@Model.Name</span></h1>
+                </div>
+                <div class="business-status"><span>Trạng thái:</span><strong>Đang hiển thị</strong><b>#@Model.Id</b></div>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="edit-layout">
+                <div class="edit-main">
+                    <section class="admin-card">
+                        <h2>Thông tin</h2>
+                        <div class="admin-grid-2">
+                            <div class="admin-field">
+                                <label asp-for="Name">Tên @itemLabel</label>
+                                <input asp-for="Name" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="admin-field">
+                                <label asp-for="Price">Giá</label>
+                                <input asp-for="Price" />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="admin-field full">
+                            <label asp-for="CategoryId">Danh mục</label>
+                            <select asp-for="CategoryId" asp-items="ViewBag.Categories"></select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                        <div class="admin-field full">
+                            <label asp-for="Description">Mô tả</label>
+                            <textarea asp-for="Description" rows="7"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </section>
+
+                    <section class="admin-card">
+                        <h2>Hình ảnh</h2>
+                        <div class="edit-images">
+                            <div class="edit-image-main">
+                                <span>Ảnh chính</span>
+                                @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                                {
+                                    <img src="@Model.ImageUrl" alt="@Model.Name" />
+                                }
+                            </div>
+                            <label><input type="file" name="imageUrl" accept="image/*" /><span>+</span><strong>Đổi ảnh</strong></label>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="edit-side">
+                    <section class="action-card">
+                        <h2>Thao tác</h2>
+                        <button type="submit">Cập nhật</button>
+                        <a asp-action="Display" asp-route-id="@Model.Id" asp-route-type="@routeType">Xem chi tiết</a>
+                        <a class="delete-action" asp-action="Delete" asp-route-id="@Model.Id" asp-route-type="@routeType">Xóa @itemLabel</a>
+                    </section>
+                </aside>
+            </div>
+        </form>
+    </main>
+</section>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

@@ -1,0 +1,78 @@
+@model _1473_VTKNgoc_Buoi3.Models.Product
+
+@{
+    var isService = ViewBag.Context == "Service";
+    var itemLabel = isService ? "dịch vụ" : "sản phẩm";
+    var routeType = isService ? "service" : null;
+    ViewData["Title"] = $"Thêm {itemLabel}";
+}
+
+<section class="admin-page">
+    <main class="admin-shell">
+        <form asp-action="Add" asp-route-type="@routeType" method="post" enctype="multipart/form-data">
+            <div class="admin-page-head">
+                <div>
+                    <h1>Thêm @(isService ? "Dịch Vụ" : "Sản Phẩm") Mới</h1>
+                    <p>Nhập thông tin để đưa @itemLabel vào hệ thống PetLounge.</p>
+                </div>
+                <div class="admin-head-actions">
+                    <a asp-action="@(isService ? "Services" : "Index")">Hủy bỏ</a>
+                    <button type="submit">Lưu @itemLabel</button>
+                </div>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="admin-product-layout">
+                <div class="admin-main-col">
+                    <section class="admin-card">
+                        <h2>Thông tin cơ bản</h2>
+                        <div class="admin-field full">
+                            <label asp-for="Name">Tên @itemLabel</label>
+                            <input asp-for="Name" placeholder="Nhập tên @itemLabel" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="admin-grid-2">
+                            <div class="admin-field">
+                                <label asp-for="CategoryId">Danh mục</label>
+                                <select asp-for="CategoryId" asp-items="ViewBag.Categories"></select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                            <div class="admin-field">
+                                <label asp-for="Price">Giá</label>
+                                <input asp-for="Price" placeholder="0" />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="admin-card">
+                        <h2>Mô tả</h2>
+                        <textarea asp-for="Description" rows="8" placeholder="Nhập mô tả @itemLabel..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </section>
+                </div>
+
+                <aside class="admin-side-col">
+                    <section class="admin-card">
+                        <h2>Hình ảnh</h2>
+                        <label class="upload-drop">
+                            <input type="file" name="imageUrl" accept="image/*" />
+                            <span>+</span>
+                            <strong>Chọn ảnh chính</strong>
+                            <small>Hỗ trợ JPG, PNG</small>
+                        </label>
+                    </section>
+                    <section class="sales-tip">
+                        <h3>Gợi ý</h3>
+                        <p>Hãy đặt tên rõ ràng, mô tả ngắn gọn và chọn đúng danh mục để khách hàng dễ tìm thấy.</p>
+                    </section>
+                </aside>
+            </div>
+        </form>
+    </main>
+</section>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

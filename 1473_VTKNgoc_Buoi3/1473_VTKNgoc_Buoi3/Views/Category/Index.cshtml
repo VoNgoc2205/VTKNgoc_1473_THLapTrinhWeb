@@ -1,0 +1,78 @@
+@model IEnumerable<_1473_VTKNgoc_Buoi3.Models.Category>
+
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+    var categories = Model.ToList();
+}
+
+<section class="admin-page">
+    <main class="admin-shell category-admin-shell">
+        <div class="category-admin-head">
+            <div>
+                <h1>Quản Lý Danh Mục</h1>
+                <p>Sắp xếp và quản lý các nhóm sản phẩm, dịch vụ trong cửa hàng thú cưng.</p>
+            </div>
+            <a asp-action="Add">+ Thêm danh mục mới</a>
+        </div>
+
+        <form class="category-summary-row" asp-action="Index" method="get">
+            <article class="category-stat-card">
+                <div class="stat-icon warm">DM</div>
+                <div><span>Tổng danh mục</span><strong>@categories.Count</strong></div>
+            </article>
+            <article class="category-stat-card">
+                <div class="stat-icon green">SP</div>
+                <div><span>Sản phẩm & dịch vụ</span><strong>@categories.Sum(c => c.Products?.Count ?? 0)</strong></div>
+            </article>
+            <article class="category-filter-card">
+                <input class="filter-input" name="q" value="@ViewBag.Search" placeholder="Tìm danh mục..." />
+                <select class="filter-input" name="sort">
+                    <option value="">Mới tạo</option>
+                    <option value="name">Theo tên</option>
+                    <option value="count-desc">Nhiều mục nhất</option>
+                </select>
+                <button type="submit">Lọc</button>
+            </article>
+        </form>
+
+        <section class="category-table-card refined-category-table">
+            <table class="category-admin-table">
+                <thead>
+                    <tr>
+                        <th>Tên danh mục</th>
+                        <th>Mô tả</th>
+                        <th>Số lượng</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in categories)
+                    {
+                        <tr>
+                            <td>
+                                <div class="category-name-cell">
+                                    <span>@category.Name.Substring(0, 1).ToUpper()</span>
+                                    <strong>@category.Name</strong>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="category-desc">Nhóm @category.Name.ToLower() dành cho thú cưng trong cửa hàng PetLounge.</p>
+                            </td>
+                            <td><em>@(category.Products?.Count ?? 0) mục</em></td>
+                            <td>
+                                <div class="category-row-actions">
+                                    <a asp-action="Update" asp-route-id="@category.Id" title="Sửa">Sửa</a>
+                                    <a class="danger" asp-action="Delete" asp-route-id="@category.Id" title="Xóa">Xóa</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="category-table-footer">
+                <span>Hiển thị @categories.Count danh mục</span>
+                <div><strong>1</strong></div>
+            </div>
+        </section>
+    </main>
+</section>

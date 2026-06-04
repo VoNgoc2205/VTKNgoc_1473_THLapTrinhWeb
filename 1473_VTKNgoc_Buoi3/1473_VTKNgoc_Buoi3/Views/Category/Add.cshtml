@@ -1,0 +1,43 @@
+@model _1473_VTKNgoc_Buoi3.Models.Category
+
+@{
+    ViewData["Title"] = "Thêm danh mục";
+}
+
+<section class="admin-page">
+    <main class="admin-shell">
+        <form asp-action="Add" method="post" class="category-form-layout">
+            <div class="category-form-main">
+                <div class="admin-breadcrumb"><a asp-action="Index">Danh mục</a><span>/</span><strong>Thêm mới</strong></div>
+                <h1>Thêm Danh Mục Mới</h1>
+                <p>Tạo nhóm mới để quản lý sản phẩm và dịch vụ dễ hơn.</p>
+
+                <section class="admin-card">
+                    <h2>Thông tin danh mục</h2>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="admin-field full">
+                        <label asp-for="Name">Tên danh mục</label>
+                        <input asp-for="Name" placeholder="Ví dụ: Thức ăn thú cưng" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="category-form-side">
+                <section class="action-card">
+                    <h2>Thao tác</h2>
+                    <button type="submit">Lưu danh mục</button>
+                    <a asp-action="Index">Quay lại danh sách</a>
+                </section>
+                <section class="sales-tip">
+                    <h3>Gợi ý</h3>
+                    <p>Tên danh mục nên ngắn gọn và phản ánh đúng nhóm sản phẩm hoặc dịch vụ.</p>
+                </section>
+            </aside>
+        </form>
+    </main>
+</section>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

@@ -1,0 +1,98 @@
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<section class="lounge-hero">
+    <div class="lounge-hero-copy">
+        <span class="lounge-badge">Chào mừng đến với PetLounge</span>
+        <h1>Nơi yêu thương bắt đầu từ <span>những chiếc chân nhỏ</span></h1>
+        <p>PetLounge hỗ trợ quản lý sản phẩm, dịch vụ, danh mục và hình ảnh cho cửa hàng thú cưng một cách rõ ràng.</p>
+        <div class="lounge-actions">
+            <a class="btn-main" asp-controller="Product" asp-action="Index">Xem sản phẩm</a>
+            <a class="btn-soft" asp-controller="Product" asp-action="Services">Xem dịch vụ</a>
+        </div>
+    </div>
+    <div class="lounge-hero-visual">
+        <img src="~/images/pet-banner.jpg" alt="PetLounge" />
+        <div class="hero-note">
+            <strong>CRUD</strong>
+            <span>Thêm, sửa, xóa và tìm kiếm</span>
+        </div>
+    </div>
+</section>
+
+<section class="home-band">
+    <div class="home-section-title split">
+        <div>
+            <h2>Khu vực quản lý</h2>
+            <p>Truy cập nhanh các chức năng chính của hệ thống.</p>
+        </div>
+        <a asp-controller="Category" asp-action="Index">Quản lý danh mục</a>
+    </div>
+
+    <div class="pet-card-grid">
+        <article class="lounge-pet-card">
+            <img src="~/images/GoiNgu.jpg" alt="Sản phẩm" />
+            <div class="pet-card-body">
+                <h3>Sản phẩm</h3>
+                <p>Quản lý tên, giá, mô tả, hình ảnh và danh mục.</p>
+                <div class="pet-tags"><span>Tìm kiếm</span><span>Lọc giá</span></div>
+                <a asp-controller="Product" asp-action="Index">Mở danh sách</a>
+            </div>
+        </article>
+        <article class="lounge-pet-card">
+            <img src="~/images/tam.jpg" alt="Dịch vụ" />
+            <div class="pet-card-body">
+                <h3>Dịch vụ</h3>
+                <p>Quản lý các dịch vụ chăm sóc, spa và sức khỏe.</p>
+                <div class="pet-tags"><span>Thêm mới</span><span>Sắp xếp</span></div>
+                <a asp-controller="Product" asp-action="Services">Mở dịch vụ</a>
+            </div>
+        </article>
+        <article class="lounge-pet-card">
+            <img src="~/images/Cat.jpg" alt="Danh mục" />
+            <div class="pet-card-body">
+                <h3>Danh mục</h3>
+                <p>Nhóm sản phẩm và dịch vụ để quản lý dễ hơn.</p>
+                <div class="pet-tags"><span>Thống kê</span><span>CRUD</span></div>
+                <a asp-controller="Category" asp-action="Index">Mở danh mục</a>
+            </div>
+        </article>
+        <article class="lounge-pet-card">
+            <img src="~/images/Hat.jpg" alt="Hình ảnh" />
+            <div class="pet-card-body">
+                <h3>Hình ảnh</h3>
+                <p>Tải ảnh chính khi thêm hoặc cập nhật sản phẩm.</p>
+                <div class="pet-tags"><span>Upload</span><span>Cập nhật</span></div>
+                <a asp-controller="Product" asp-action="Add">Thêm sản phẩm</a>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="services-band">
+    <div class="home-section-title centered">
+        <h2>Chức năng đã hoàn thiện</h2>
+        <p>Hệ thống có đầy đủ luồng xem danh sách, xem chi tiết, thêm, sửa, xóa, tìm kiếm, lọc và sắp xếp.</p>
+    </div>
+    <div class="service-grid">
+        <article>
+            <div class="service-icon">SP</div>
+            <h3>Sản phẩm</h3>
+            <p>Quản lý dữ liệu sản phẩm và ảnh đại diện.</p>
+            <a asp-controller="Product" asp-action="Index">Quản lý</a>
+        </article>
+        <article>
+            <div class="service-icon">DV</div>
+            <h3>Dịch vụ</h3>
+            <p>Tách riêng danh sách dịch vụ để dễ theo dõi.</p>
+            <a asp-controller="Product" asp-action="Services">Quản lý</a>
+        </article>
+        <article>
+            <div class="service-icon">DM</div>
+            <h3>Danh mục</h3>
+            <p>Thống kê số mục trong từng danh mục.</p>
+            <a asp-controller="Category" asp-action="Index">Quản lý</a>
+        </article>
+    </div>
+</section>
