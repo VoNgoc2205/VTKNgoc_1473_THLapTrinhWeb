@@ -1,44 +1,143 @@
+@using _1473_VTKNgoc_Buoi3.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ApplicationUser? currentUser = null;
+
+    if (SignInManager.IsSignedIn(User))
+    {
+        currentUser = await UserManager.GetUserAsync(User);
+    }
+}
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - PetLounge</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/_1473_VTKNgoc_Buoi3.styles.css" asp-append-version="true" />
 </head>
+
 <body>
     <header class="site-header">
         <nav class="navbar navbar-expand-lg pet-navbar">
             <div class="container">
-                <a class="navbar-brand pet-brand" asp-area="" asp-controller="Home" asp-action="Index">PetLounge</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Mở menu">
+
+                <a class="navbar-brand pet-brand"
+                   asp-area=""
+                   asp-controller="Home"
+                   asp-action="Index">
+                    PetLounge
+                </a>
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target=".navbar-collapse"
+                        aria-expanded="false"
+                        aria-label="Mở menu">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse">
+
                     <ul class="navbar-nav mx-auto align-items-lg-center gap-lg-4">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Product" asp-action="Index">Mua sắm</a>
+                            <a class="nav-link" asp-controller="Product" asp-action="Index">Mua sắm</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Product" asp-action="Services">Dịch vụ</a>
+                            <a class="nav-link" asp-controller="Product" asp-action="Services">Dịch vụ</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Category" asp-action="Index">Danh mục</a>
+                            <a class="nav-link" asp-controller="Category" asp-action="Index">Danh mục</a>
                         </li>
                     </ul>
-                    <form class="nav-search" role="search" asp-controller="Product" asp-action="Index" method="get">
+
+                    <form class="nav-search"
+                          role="search"
+                          asp-controller="Product"
+                          asp-action="Index"
+                          method="get">
                         <span>Tìm</span>
-                        <input name="q" type="search" value="@ViewBag.Search" placeholder="Tìm sản phẩm hoặc dịch vụ..." aria-label="Tìm kiếm" />
+                        <input name="q"
+                               type="search"
+                               value="@ViewBag.Search"
+                               placeholder="Tìm sản phẩm hoặc dịch vụ..."
+                               aria-label="Tìm kiếm" />
                     </form>
-                    <div class="nav-tools">
-                        <a class="nav-tool" asp-area="" asp-controller="Product" asp-action="Add" aria-label="Thêm sản phẩm">+</a>
-                    </div>
+
+                    @if (SignInManager.IsSignedIn(User) && currentUser != null)
+                    {
+                        <div class="header-actions">
+
+                            <a asp-controller="Cart"
+                               asp-action="Index"
+                               class="header-cart">
+                                <span class="cart-icon-wrap">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                </span>
+                                <span class="cart-text">Giỏ hàng</span>
+                            </a>
+
+                            <a asp-controller="Account"
+                               asp-action="Profile"
+                               class="user-profile-link">
+
+                                <div class="user-info">
+                                    <span class="user-name">
+                                        @(string.IsNullOrEmpty(currentUser.FullName)
+                                            ? currentUser.Email
+                                            : currentUser.FullName)
+                                    </span>
+
+                                    <span class="user-role">
+                                        PetLounge Member
+                                    </span>
+                                </div>
+
+                                <img src="@(string.IsNullOrEmpty(currentUser.AvatarUrl)
+                                           ? "/images/avatar-default.jpg"
+                                           : currentUser.AvatarUrl)"
+                                     class="user-avatar"
+                                     alt="Avatar" />
+                            </a>
+
+                            <form method="post"
+                                  action="/Identity/Account/Logout"
+                                  class="logout-form">
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit"
+                                        class="logout-icon-btn"
+                                        title="Đăng xuất">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                </button>
+                            </form>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="auth-buttons">
+                            <a href="/Identity/Account/Login" class="login-btn">Đăng nhập</a>
+                            <a href="/Identity/Account/Register" class="register-btn">Đăng ký</a>
+                        </div>
+                    }
+
                 </div>
             </div>
         </nav>
@@ -60,6 +159,7 @@
                     <span>IG</span>
                 </div>
             </div>
+
             <div class="footer-col">
                 <h4>Khám phá</h4>
                 <a asp-controller="Home" asp-action="Index">Trang chủ</a>
@@ -67,12 +167,17 @@
                 <a asp-controller="Product" asp-action="Services">Dịch vụ</a>
                 <a asp-controller="Category" asp-action="Index">Danh mục</a>
             </div>
-            <div class="footer-col">
-                <h4>Quản lý</h4>
-                <a asp-controller="Product" asp-action="Add">Thêm sản phẩm</a>
-                <a asp-controller="Product" asp-action="Add" asp-route-type="service">Thêm dịch vụ</a>
-                <a asp-controller="Category" asp-action="Add">Thêm danh mục</a>
-            </div>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="footer-col">
+                    <h4>Quản lý</h4>
+                    <a asp-controller="Product" asp-action="Add">Thêm sản phẩm</a>
+                    <a asp-controller="Product" asp-action="Add" asp-route-type="service">Thêm dịch vụ</a>
+                    <a asp-controller="Category" asp-action="Add">Thêm danh mục</a>
+                </div>
+            }
+
             <div class="footer-col">
                 <h4>Liên hệ</h4>
                 <p>Thành phố Hồ Chí Minh</p>
@@ -80,12 +185,16 @@
                 <p>hello@petlounge.vn</p>
             </div>
         </div>
-        <div class="footer-bottom">© 2026 PetLounge. Nâng niu từng bước chân nhỏ.</div>
+
+        <div class="footer-bottom">
+            © 2026 PetLounge. Nâng niu từng bước chân nhỏ.
+        </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

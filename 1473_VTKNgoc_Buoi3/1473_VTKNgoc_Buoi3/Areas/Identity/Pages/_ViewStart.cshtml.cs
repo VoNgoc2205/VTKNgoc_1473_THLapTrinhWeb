@@ -1,0 +1,12 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace _1473_VTKNgoc_Buoi3.Areas.Identiny.Pages
+{
+    public class _ViewStartModel : PageModel
+    {
+        public void OnGet()
+        {
+        }
+    }
+}

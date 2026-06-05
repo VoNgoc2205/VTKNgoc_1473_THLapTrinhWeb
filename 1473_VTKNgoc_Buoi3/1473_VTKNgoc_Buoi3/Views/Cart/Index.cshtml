@@ -1,0 +1,83 @@
+﻿@model List<_1473_VTKNgoc_Buoi3.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    var total = Model.Sum(x => x.Total);
+}
+
+<section class="cart-page">
+    <div class="cart-card">
+        <div class="cart-header">
+            <h1>Giỏ hàng của bạn</h1>
+            <a asp-controller="Product" asp-action="Index">Tiếp tục mua sắm</a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="cart-empty">
+                <h2>Giỏ hàng đang trống</h2>
+                <p>Hãy chọn sản phẩm yêu thích cho thú cưng của bạn.</p>
+            </div>
+        }
+        else
+        {
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="cart-product">
+                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/avatar-default.jpg" : item.ImageUrl)" />
+                                    <strong>@item.ProductName</strong>
+                                </div>
+                            </td>
+
+                            <td>@item.Price.ToString("N0") VNĐ</td>
+
+                            <td>
+                                <div class="cart-qty">
+                                    <a asp-action="Decrease" asp-route-id="@item.ProductId">-</a>
+                                    <span>@item.Quantity</span>
+                                    <a asp-action="Increase" asp-route-id="@item.ProductId">+</a>
+                                </div>
+                            </td>
+
+                            <td>
+                                <strong>@item.Total.ToString("N0") VNĐ</strong>
+                            </td>
+
+                            <td>
+                                <a class="cart-remove"
+                                   asp-action="Remove"
+                                   asp-route-id="@item.ProductId">
+                                    Xóa
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="cart-summary">
+                <a class="cart-clear" asp-action="Clear">Xóa giỏ hàng</a>
+
+                <div>
+                    <span>Tổng tiền</span>
+                    <strong>@total.ToString("N0") VNĐ</strong>
+                    <button class="checkout-btn">Thanh toán</button>
+                </div>
+            </div>
+        }
+    </div>
+</section>

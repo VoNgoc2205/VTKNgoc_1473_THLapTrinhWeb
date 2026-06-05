@@ -12,7 +12,11 @@
                 <h1>Quản Lý Danh Mục</h1>
                 <p>Sắp xếp và quản lý các nhóm sản phẩm, dịch vụ trong cửa hàng thú cưng.</p>
             </div>
-            <a asp-action="Add">+ Thêm danh mục mới</a>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Add">+ Thêm danh mục mới</a>
+            }
         </div>
 
         <form class="category-summary-row" asp-action="Index" method="get">
@@ -20,10 +24,12 @@
                 <div class="stat-icon warm">DM</div>
                 <div><span>Tổng danh mục</span><strong>@categories.Count</strong></div>
             </article>
+
             <article class="category-stat-card">
                 <div class="stat-icon green">SP</div>
                 <div><span>Sản phẩm & dịch vụ</span><strong>@categories.Sum(c => c.Products?.Count ?? 0)</strong></div>
             </article>
+
             <article class="category-filter-card">
                 <input class="filter-input" name="q" value="@ViewBag.Search" placeholder="Tìm danh mục..." />
                 <select class="filter-input" name="sort">
@@ -42,9 +48,14 @@
                         <th>Tên danh mục</th>
                         <th>Mô tả</th>
                         <th>Số lượng</th>
-                        <th>Thao tác</th>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th>Thao tác</th>
+                        }
                     </tr>
                 </thead>
+
                 <tbody>
                     @foreach (var category in categories)
                     {
@@ -55,20 +66,41 @@
                                     <strong>@category.Name</strong>
                                 </div>
                             </td>
+
                             <td>
-                                <p class="category-desc">Nhóm @category.Name.ToLower() dành cho thú cưng trong cửa hàng PetLounge.</p>
+                                <p class="category-desc">
+                                    Nhóm @category.Name.ToLower() dành cho thú cưng trong cửa hàng PetLounge.
+                                </p>
                             </td>
-                            <td><em>@(category.Products?.Count ?? 0) mục</em></td>
+
                             <td>
-                                <div class="category-row-actions">
-                                    <a asp-action="Update" asp-route-id="@category.Id" title="Sửa">Sửa</a>
-                                    <a class="danger" asp-action="Delete" asp-route-id="@category.Id" title="Xóa">Xóa</a>
-                                </div>
+                                <em>@(category.Products?.Count ?? 0) mục</em>
                             </td>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <td>
+                                    <div class="category-row-actions">
+                                        <a asp-action="Update"
+                                           asp-route-id="@category.Id"
+                                           title="Sửa">
+                                            Sửa
+                                        </a>
+
+                                        <a class="danger"
+                                           asp-action="Delete"
+                                           asp-route-id="@category.Id"
+                                           title="Xóa">
+                                            Xóa
+                                        </a>
+                                    </div>
+                                </td>
+                            }
                         </tr>
                     }
                 </tbody>
             </table>
+
             <div class="category-table-footer">
                 <span>Hiển thị @categories.Count danh mục</span>
                 <div><strong>1</strong></div>

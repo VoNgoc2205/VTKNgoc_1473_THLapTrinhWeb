@@ -1,5 +1,6 @@
 using _1473_VTKNgoc_Buoi3.Models;
 using _1473_VTKNgoc_Buoi3.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -21,6 +22,7 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
             _environment = environment;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string? q, int? categoryId, decimal? minPrice, decimal? maxPrice, string? sort)
         {
             var products = await _productRepository.GetAllAsync();
@@ -29,6 +31,7 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
             return View(FilterProducts(products.Where(p => !IsServiceProduct(p)), q, categoryId, minPrice, maxPrice, sort));
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Services(string? q, int? categoryId, decimal? minPrice, decimal? maxPrice, string? sort)
         {
             var products = await _productRepository.GetAllAsync();
@@ -37,6 +40,7 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
             return View("Index", FilterProducts(products.Where(IsServiceProduct), q, categoryId, minPrice, maxPrice, sort));
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Display(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
@@ -50,6 +54,7 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
             return View(product);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add()
         {
             var isService = Request.Query["type"] == "service";
@@ -60,6 +65,7 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(Product product, IFormFile? imageUrl, List<IFormFile>? imageUrls)
         {
             ModelState.Remove("ImageUrl");
@@ -92,6 +98,7 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
             return View(product);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
@@ -108,6 +115,7 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, Product product, IFormFile? imageUrl)
         {
             ModelState.Remove("ImageUrl");
@@ -147,6 +155,7 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
             return View(product);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
@@ -162,6 +171,7 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
 
         [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _productRepository.DeleteAsync(id);

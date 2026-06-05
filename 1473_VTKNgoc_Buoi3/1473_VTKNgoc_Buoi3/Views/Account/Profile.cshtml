@@ -1,0 +1,130 @@
+﻿@model _1473_VTKNgoc_Buoi3.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Tài khoản";
+    var avatar = string.IsNullOrEmpty(Model.AvatarUrl)
+        ? "/images/avatar-default.jpg"
+        : Model.AvatarUrl;
+}
+
+<div class="profile-page">
+    <div class="profile-sidebar">
+        <img src="@avatar" class="profile-avatar" alt="Avatar" />
+
+        <h3>@(string.IsNullOrEmpty(Model.FullName) ? Model.Email : Model.FullName)</h3>
+        <p>@Model.Email</p>
+
+        <a class="profile-menu active">
+            <i class="fa-solid fa-user"></i>
+            Thông tin cá nhân
+        </a>
+
+        <a class="profile-menu">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            Lịch sử đơn hàng
+        </a>
+
+        <a class="profile-menu">
+            <i class="fa-solid fa-gear"></i>
+            Cài đặt
+        </a>
+
+        <form method="post" action="/Identity/Account/Logout">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="profile-logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Đăng xuất
+            </button>
+        </form>
+    </div>
+
+    <div class="profile-content">
+        <div class="profile-hero">
+            <img src="@avatar" class="hero-avatar" alt="Avatar" />
+
+            <div>
+                <h1>@(string.IsNullOrEmpty(Model.FullName) ? "Người dùng PetLounge" : Model.FullName)</h1>
+                <p>Thành viên PetLounge</p>
+            </div>
+        </div>
+
+        <form asp-action="Profile"
+              method="post"
+              enctype="multipart/form-data"
+              class="profile-card">
+
+            @Html.AntiForgeryToken()
+
+            <div class="profile-card-header">
+                <h2>Thông tin cá nhân</h2>
+
+                <button type="submit" class="save-profile-btn">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Lưu thông tin
+                </button>
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["Success"]
+                </div>
+            }
+
+            <div class="profile-avatar-upload">
+                <img src="@avatar" class="profile-avatar-preview" alt="Avatar preview" />
+
+                <div>
+                    <label>Ảnh đại diện</label>
+                    <input type="file"
+                           name="AvatarFile"
+                           class="form-control"
+                           accept="image/*" />
+                    <small>Chọn ảnh mới nếu muốn thay đổi ảnh đại diện.</small>
+                </div>
+            </div>
+
+            <div class="profile-grid">
+                <div>
+                    <label>Họ và tên</label>
+                    <input asp-for="FullName" placeholder="Nhập họ và tên" />
+                </div>
+
+                <div>
+                    <label>Email</label>
+                    <input value="@Model.Email" readonly />
+                </div>
+
+                <div>
+                    <label>Số điện thoại</label>
+                    <input asp-for="PhoneNumber" placeholder="Nhập số điện thoại" />
+                </div>
+
+                <div>
+                    <label>Giới tính</label>
+                    <select asp-for="Gender">
+                        <option value="">-- Chọn giới tính --</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Ngày sinh</label>
+                    <input asp-for="BirthDate" type="date" />
+                </div>
+
+                <div>
+                    <label>Trạng thái Email</label>
+                    <input value="@(Model.EmailConfirmed ? "Đã xác nhận" : "Chưa xác nhận")" readonly />
+                </div>
+
+                <div class="profile-full">
+                    <label>Địa chỉ</label>
+                    <input asp-for="Address" placeholder="Nhập địa chỉ" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

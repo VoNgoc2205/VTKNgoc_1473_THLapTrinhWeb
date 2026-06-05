@@ -11,7 +11,7 @@ using _1473_VTKNgoc_Buoi3.Models;
 namespace _1473_VTKNgoc_Buoi3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260603142625_ThemDichVu")]
+    [Migration("20260605054426_ThemDichVu")]
     partial class ThemDichVu
     {
         /// <inheritdoc />
@@ -45,22 +45,22 @@ namespace _1473_VTKNgoc_Buoi3.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Th?c an th� cung"
+                            Name = "Thức ăn thú cưng"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Ph? ki?n"
+                            Name = "Phụ kiện"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Cham s�c s?c kh?e"
+                            Name = "Chăm sóc sức khỏe"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "D?ch v? cham s�c"
+                            Name = "Dịch vụ chăm sóc"
                         });
                 });
 
@@ -101,54 +101,54 @@ namespace _1473_VTKNgoc_Buoi3.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            Description = "H?t gi�u protein, b? sung vitamin gi�p m�o kh?e m?nh v� l�ng mu?t.",
+                            Description = "Hạt giàu protein, bổ sung vitamin giúp mèo khỏe mạnh và lông mượt.",
                             ImageUrl = "/images/Hat.jpg",
-                            Name = "H?t dinh du?ng cho m�o",
+                            Name = "Hạt dinh dưỡng cho mèo",
                             Price = 185000m
                         },
                         new
                         {
                             Id = 2,
                             CategoryId = 2,
-                            Description = "G?i ng? �m �i, gi�p th� cung ngh? ngoi tho?i m�i trong m?i g�c nh�.",
+                            Description = "Gối ngủ êm ái, giúp thú cưng nghỉ ngơi thoải mái trong mọi góc nhà.",
                             ImageUrl = "/images/GoiNgu.jpg",
-                            Name = "G?i ng? m?m cho th� cung",
+                            Name = "Gối ngủ mềm cho thú cưng",
                             Price = 249000m
                         },
                         new
                         {
                             Id = 3,
                             CategoryId = 3,
-                            Description = "Kh�ng gian leo tr�o v� ngh? ngoi g?n d?p, ph� h?p cho m�o nang d?ng.",
+                            Description = "Không gian leo trèo và nghỉ ngơi gọn đẹp, phù hợp cho mèo năng động.",
                             ImageUrl = "/images/Cat.jpg",
-                            Name = "Nh� c�y cho m�o",
+                            Name = "Nhà cây cho mèo",
                             Price = 390000m
                         },
                         new
                         {
                             Id = 4,
                             CategoryId = 4,
-                            Description = "D?ch v? t?m, s?y v� c?t t?a l�ng gi�p th� cung s?ch s?, thom tho v� tho?i m�i.",
+                            Description = "Dịch vụ tắm, sấy và cắt tỉa lông giúp thú cưng sạch sẽ, thơm tho và thoải mái.",
                             ImageUrl = "/images/pet-banner.jpg",
-                            Name = "Spa & Grooming cao c?p",
+                            Name = "Spa & Grooming cao cấp",
                             Price = 200000m
                         },
                         new
                         {
                             Id = 5,
                             CategoryId = 4,
-                            Description = "Kh�ng gian luu tr� s?ch s?, c� khu vui choi v� nh�n vi�n theo d�i th� cung trong ng�y.",
+                            Description = "Không gian lưu trú sạch sẽ, có khu vui chơi và nhân viên theo dõi thú cưng trong ngày.",
                             ImageUrl = "/images/GoiNgu.jpg",
-                            Name = "Kh�ch s?n cho th� cung",
+                            Name = "Khách sạn cho thú cưng",
                             Price = 350000m
                         },
                         new
                         {
                             Id = 6,
                             CategoryId = 4,
-                            Description = "G�i ki?m tra s?c kh?e d?nh k? v� tu v?n ti�m ph�ng c?n thi?t cho ch� m�o.",
+                            Description = "Gói kiểm tra sức khỏe định kỳ và tư vấn tiêm phòng cần thiết cho chó mèo.",
                             ImageUrl = "/images/Cat.jpg",
-                            Name = "Ti�m ph�ng & kh�m t?ng qu�t",
+                            Name = "Tiêm phòng & khám tổng quát",
                             Price = 150000m
                         });
                 });

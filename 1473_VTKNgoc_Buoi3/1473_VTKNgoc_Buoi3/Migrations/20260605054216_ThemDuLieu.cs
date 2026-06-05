@@ -73,9 +73,10 @@ namespace _1473_VTKNgoc_Buoi3.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Th?c an th� cung" },
-                    { 2, "Ph? ki?n" },
-                    { 3, "Cham s�c s?c kh?e" }
+                    { 1, "Thức ăn thú cưng" },
+                    { 2, "Phụ kiện" },
+                    { 3, "Chăm sóc sức khỏe" },
+                    { 4, "Dịch vụ chăm sóc" }
                 });
 
             migrationBuilder.InsertData(
@@ -83,9 +84,12 @@ namespace _1473_VTKNgoc_Buoi3.Migrations
                 columns: new[] { "Id", "CategoryId", "Description", "ImageUrl", "Name", "Price" },
                 values: new object[,]
                 {
-                    { 1, 1, "H?t gi�u protein, b? sung vitamin gi�p m�o kh?e m?nh v� l�ng mu?t.", "/images/Hat.jpg", "H?t dinh du?ng cho m�o", 185000m },
-                    { 2, 2, "G?i ng? �m �i, gi�p th� cung ngh? ngoi tho?i m�i trong m?i g�c nh�.", "/images/GoiNgu.jpg", "G?i ng? m?m cho th� cung", 249000m },
-                    { 3, 3, "Kh�ng gian leo tr�o v� ngh? ngoi g?n d?p, ph� h?p cho m�o nang d?ng.", "/images/Cat.jpg", "Nh� c�y cho m�o", 390000m }
+                    { 1, 1, "Hạt giàu protein, bổ sung vitamin giúp mèo khỏe mạnh và lông mượt.", "/images/Hat.jpg", "Hạt dinh dưỡng cho mèo", 185000m },
+                    { 2, 2, "Gối ngủ êm ái, giúp thú cưng nghỉ ngơi thoải mái trong mọi góc nhà.", "/images/GoiNgu.jpg", "Gối ngủ mềm cho thú cưng", 249000m },
+                    { 3, 3, "Không gian leo trèo và nghỉ ngơi gọn đẹp, phù hợp cho mèo năng động.", "/images/Cat.jpg", "Nhà cây cho mèo", 390000m },
+                    { 4, 4, "Dịch vụ tắm, sấy và cắt tỉa lông giúp thú cưng sạch sẽ, thơm tho và thoải mái.", "/images/pet-banner.jpg", "Spa & Grooming cao cấp", 200000m },
+                    { 5, 4, "Không gian lưu trú sạch sẽ, có khu vui chơi và nhân viên theo dõi thú cưng trong ngày.", "/images/GoiNgu.jpg", "Khách sạn cho thú cưng", 350000m },
+                    { 6, 4, "Gói kiểm tra sức khỏe định kỳ và tư vấn tiêm phòng cần thiết cho chó mèo.", "/images/Cat.jpg", "Tiêm phòng & khám tổng quát", 150000m }
                 });
 
             migrationBuilder.CreateIndex(

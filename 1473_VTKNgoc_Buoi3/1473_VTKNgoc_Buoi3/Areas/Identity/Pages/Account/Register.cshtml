@@ -1,0 +1,103 @@
+﻿@page "/Identity/Account/Register"
+@model _1473_VTKNgoc_Buoi3.Areas.Identity.Pages.Account.RegisterModel
+
+@{
+    ViewData["Title"] = "Đăng ký";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="register-page">
+    <div class="register-card register-card-wide">
+        <div class="register-header">
+            <div class="register-logo">🐾</div>
+            <h2>Tạo tài khoản PetLounge</h2>
+            <p>Điền thông tin cá nhân để bắt đầu sử dụng dịch vụ chăm sóc thú cưng.</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">@Model.ErrorMessage</div>
+            }
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="avatar-upload">
+                <img src="~/images/avatar-default.jpg" class="register-avatar-preview" />
+                <div>
+                    <label>Ảnh đại diện</label>
+                    <input asp-for="Input.AvatarFile" type="file" class="form-control" accept="image/*" />
+                </div>
+            </div>
+
+            <div class="register-grid">
+                <div class="form-group">
+                    <label>Họ và tên</label>
+                    <input asp-for="Input.FullName" class="form-control" placeholder="Nguyễn Văn A" />
+                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input asp-for="Input.Email" class="form-control" placeholder="email@vi-du.com" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="0901234567" />
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày sinh</label>
+                    <input asp-for="Input.BirthDate" type="date" class="form-control" />
+                    <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Giới tính</label>
+                    <select asp-for="Input.Gender" class="form-control">
+                        <option value="">-- Chọn giới tính --</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <input asp-for="Input.Address" class="form-control" placeholder="TP.HCM, Việt Nam" />
+                    <span asp-validation-for="Input.Address" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Mật khẩu</label>
+                    <input asp-for="Input.Password" type="password" class="form-control" placeholder="Admin@123" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Xác nhận mật khẩu</label>
+                    <input asp-for="Input.ConfirmPassword" type="password" class="form-control" placeholder="Admin@123" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="register-submit">
+                Tạo tài khoản →
+            </button>
+        </form>
+
+        <p class="login-text">
+            Đã có tài khoản?
+            <a href="/Identity/Account/Login">Đăng nhập</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

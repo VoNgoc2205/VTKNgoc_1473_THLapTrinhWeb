@@ -1,0 +1,76 @@
+﻿@page "/Identity/Account/Login"
+@model _1473_VTKNgoc_Buoi3.Areas.Identity.Pages.Account.LoginModel
+
+@{
+    ViewData["Title"] = "Đăng nhập";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="login-page">
+    <div class="login-card">
+
+        <div class="login-left">
+            <div class="login-logo">🐾 PetLounge</div>
+
+            <h1>Đăng Nhập</h1>
+            <p class="login-desc">
+                Chào mừng bạn quay trở lại với không gian của sự yêu thương.
+            </p>
+
+            <form method="post">
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger">
+                        @Model.ErrorMessage
+                    </div>
+                }
+                <div class="form-group">
+                    <label>Email hoặc Tên đăng nhập</label>
+                    <input asp-for="Input.Email"
+                           class="form-control"
+                           placeholder="example@petlounge.com" />
+                </div>
+
+                <div class="form-group">
+                    <label>Mật khẩu</label>
+                    <input asp-for="Input.Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="••••••••" />
+                </div>
+
+                <div class="login-options">
+                    <label>
+                        <input asp-for="Input.RememberMe" />
+                        Ghi nhớ tôi
+                    </label>
+
+                    <a href="#">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" class="login-submit">
+                    Đăng Nhập →
+                </button>
+            </form>
+
+            <p class="register-text">
+                Chưa có tài khoản?
+                <a asp-area="Identity" asp-page="/Account/Register">Đăng ký ngay</a>
+            </p>
+        </div>
+
+        <div class="login-right">
+            <div class="login-badge">♡ +10k Thú cưng vui vẻ</div>
+
+            <div class="quote-box">
+                <p>
+                    “Chăm sóc thú cưng của bạn như chính gia đình mình
+                    là sứ mệnh của chúng tôi.”
+                </p>
+                <strong>Kim Ngọc</strong>
+                <span>Sáng lập PetLounge</span>
+            </div>
+        </div>
+
+    </div>
+</div>

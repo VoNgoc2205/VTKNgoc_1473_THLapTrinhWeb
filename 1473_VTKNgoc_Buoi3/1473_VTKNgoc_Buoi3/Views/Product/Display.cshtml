@@ -45,10 +45,43 @@
                 <div><span>Đối tượng</span><strong>Chó / Mèo</strong></div>
                 <div><span>Tư vấn</span><strong>Miễn phí</strong></div>
             </div>
-            <div class="detail-admin-actions">
-                <a class="edit-product-btn" asp-action="Update" asp-route-id="@Model.Id" asp-route-type="@routeType">Sửa @itemLabel</a>
-                <a class="delete-product-btn" asp-action="Delete" asp-route-id="@Model.Id" asp-route-type="@routeType">Xóa @itemLabel</a>
-                <a class="back-product-btn" asp-action="@(isService ? "Services" : "Index")">Quay lại</a>
+           
+                <div class="detail-admin-actions">
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="edit-product-btn"
+                           asp-action="Update"
+                           asp-route-id="@Model.Id"
+                           asp-route-type="@routeType">
+                            Sửa @itemLabel
+                        </a>
+
+                        <a class="delete-product-btn"
+                           asp-action="Delete"
+                           asp-route-id="@Model.Id"
+                           asp-route-type="@routeType">
+                            Xóa @itemLabel
+                        </a>
+                    }
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a class="cart-product-btn"
+                           asp-controller="Cart"
+                           asp-action="AddToCart"
+                           asp-route-id="@Model.Id">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            Thêm vào giỏ hàng
+                        </a>
+                    }
+
+                    <a class="back-product-btn"
+                       asp-action="@(isService ? "Services" : "Index")">
+                        Quay lại
+                    </a>
+
+                </div>
             </div>
         </aside>
     </section>
