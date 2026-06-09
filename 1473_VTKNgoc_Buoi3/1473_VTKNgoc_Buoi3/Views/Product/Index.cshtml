@@ -106,8 +106,6 @@
                     @foreach (var product in products)
                     {
                         <article class="shop-card">
-                            <div class="shop-badge">#@product.Id</div>
-
                             <a asp-action="Display"
                                asp-route-id="@product.Id"
                                asp-route-type="@addRoute"
@@ -157,6 +155,16 @@
                                            asp-route-type="@addRoute">
                                             <i class="fa-solid fa-trash"></i>
                                             Xóa
+                                        </a>
+                                    }
+                                    else if (User.Identity?.IsAuthenticated == true && isService)
+                                    {
+                                        <a class="add-cart-btn"
+                                           asp-controller="Cart"
+                                           asp-action="BookService"
+                                           asp-route-id="@product.Id">
+                                            <i class="fa-solid fa-calendar-check"></i>
+                                            Đặt lịch
                                         </a>
                                     }
                                     else if (User.Identity?.IsAuthenticated == true && !isService)

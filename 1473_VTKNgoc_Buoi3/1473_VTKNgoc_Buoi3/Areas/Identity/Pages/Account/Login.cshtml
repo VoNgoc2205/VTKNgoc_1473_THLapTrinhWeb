@@ -1,4 +1,4 @@
-﻿@page "/Identity/Account/Login"
+@page "/Identity/Account/Login"
 @model _1473_VTKNgoc_Buoi3.Areas.Identity.Pages.Account.LoginModel
 
 @{
@@ -6,71 +6,75 @@
     Layout = "/Views/Shared/_Layout.cshtml";
 }
 
-<div class="login-page">
-    <div class="login-card">
-
-        <div class="login-left">
-            <div class="login-logo">🐾 PetLounge</div>
-
-            <h1>Đăng Nhập</h1>
-            <p class="login-desc">
-                Chào mừng bạn quay trở lại với không gian của sự yêu thương.
-            </p>
-
-            <form method="post">
-                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-                {
-                    <div class="alert alert-danger">
-                        @Model.ErrorMessage
-                    </div>
-                }
-                <div class="form-group">
-                    <label>Email hoặc Tên đăng nhập</label>
-                    <input asp-for="Input.Email"
-                           class="form-control"
-                           placeholder="example@petlounge.com" />
-                </div>
-
-                <div class="form-group">
-                    <label>Mật khẩu</label>
-                    <input asp-for="Input.Password"
-                           type="password"
-                           class="form-control"
-                           placeholder="••••••••" />
-                </div>
-
-                <div class="login-options">
-                    <label>
-                        <input asp-for="Input.RememberMe" />
-                        Ghi nhớ tôi
-                    </label>
-
-                    <a href="#">Quên mật khẩu?</a>
-                </div>
-
-                <button type="submit" class="login-submit">
-                    Đăng Nhập →
-                </button>
-            </form>
-
-            <p class="register-text">
-                Chưa có tài khoản?
-                <a asp-area="Identity" asp-page="/Account/Register">Đăng ký ngay</a>
-            </p>
-        </div>
-
-        <div class="login-right">
-            <div class="login-badge">♡ +10k Thú cưng vui vẻ</div>
-
-            <div class="quote-box">
-                <p>
-                    “Chăm sóc thú cưng của bạn như chính gia đình mình
-                    là sứ mệnh của chúng tôi.”
-                </p>
-                <strong>Kim Ngọc</strong>
-                <span>Sáng lập PetLounge</span>
-            </div>
-        </div>
-
+<section class="auth-page">
+    <div class="auth-hero">
+        <span>PetLounge Account</span>
+        <h1>Chào mừng trở lại</h1>
+        <p>Đăng nhập để mua sắm, đặt dịch vụ chăm sóc thú cưng và quản lý tài khoản của bạn.</p>
     </div>
-</div>
+
+    <section class="auth-card" aria-labelledby="login-title">
+        <div class="auth-card-head">
+            <h2 id="login-title">Đăng nhập</h2>
+            <p>Tiếp tục với tài khoản PetLounge của bạn.</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger auth-alert">
+                    @Model.ErrorMessage
+                </div>
+            }
+
+            <div class="auth-field">
+                <label asp-for="Input.Email">Email</label>
+                <div class="auth-input">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input asp-for="Input.Email"
+                           type="email"
+                           placeholder="email@vi-du.com"
+                           autocomplete="username" />
+                </div>
+            </div>
+
+            <div class="auth-field">
+                <div class="auth-label-row">
+                    <label asp-for="Input.Password">Mật khẩu</label>
+                    <a asp-page="/Account/ForgotPassword">Quên mật khẩu?</a>
+                </div>
+                <div class="auth-input">
+                    <i class="fa-solid fa-lock"></i>
+                    <input asp-for="Input.Password"
+                           class="password-toggle-input"
+                           type="password"
+                           placeholder="Nhập mật khẩu"
+                           autocomplete="current-password" />
+                    <button type="button" class="password-toggle-btn" aria-label="Hiện mật khẩu">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <label class="auth-remember">
+                <input asp-for="Input.RememberMe" />
+                <span>Duy trì đăng nhập</span>
+            </label>
+
+            <button type="submit" class="auth-submit">
+                <span>Đăng nhập</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <p class="auth-switch">
+            Chưa có tài khoản?
+            <a asp-page="/Account/Register">Đăng ký ngay</a>
+        </p>
+    </section>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/password-toggle.js" asp-append-version="true"></script>
+}

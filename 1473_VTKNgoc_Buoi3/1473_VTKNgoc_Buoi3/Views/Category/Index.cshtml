@@ -6,28 +6,42 @@
 }
 
 <section class="admin-page">
-    <main class="admin-shell category-admin-shell">
+    <main class="admin-shell category-admin-shell category-admin-soft">
         <div class="category-admin-head">
             <div>
-                <h1>Quản Lý Danh Mục</h1>
-                <p>Sắp xếp và quản lý các nhóm sản phẩm, dịch vụ trong cửa hàng thú cưng.</p>
+                <span class="category-admin-kicker">PetLounge Management</span>
+                <h1>Quản lý danh mục</h1>
+                <p>Sắp xếp và quản lý các nhóm sản phẩm, phụ kiện, dịch vụ chăm sóc thú cưng trong cửa hàng.</p>
             </div>
 
             @if (User.IsInRole("Admin"))
             {
-                <a asp-action="Add">+ Thêm danh mục mới</a>
+                <a asp-action="Add">
+                    <i class="fa-solid fa-plus"></i>
+                    Thêm danh mục mới
+                </a>
             }
         </div>
 
         <form class="category-summary-row" asp-action="Index" method="get">
             <article class="category-stat-card">
-                <div class="stat-icon warm">DM</div>
-                <div><span>Tổng danh mục</span><strong>@categories.Count</strong></div>
+                <div class="stat-icon warm">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <span>Tổng danh mục</span>
+                    <strong>@categories.Count</strong>
+                </div>
             </article>
 
             <article class="category-stat-card">
-                <div class="stat-icon green">SP</div>
-                <div><span>Sản phẩm & dịch vụ</span><strong>@categories.Sum(c => c.Products?.Count ?? 0)</strong></div>
+                <div class="stat-icon green">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <div>
+                    <span>Sản phẩm & dịch vụ</span>
+                    <strong>@categories.Sum(c => c.Products?.Count ?? 0)</strong>
+                </div>
             </article>
 
             <article class="category-filter-card">
@@ -37,7 +51,10 @@
                     <option value="name">Theo tên</option>
                     <option value="count-desc">Nhiều mục nhất</option>
                 </select>
-                <button type="submit">Lọc</button>
+                <button type="submit">
+                    <i class="fa-solid fa-filter"></i>
+                    Lọc
+                </button>
             </article>
         </form>
 
@@ -69,7 +86,7 @@
 
                             <td>
                                 <p class="category-desc">
-                                    Nhóm @category.Name.ToLower() dành cho thú cưng trong cửa hàng PetLounge.
+                                    Nhóm @category.Name.ToLower() giúp khách hàng chọn đúng sản phẩm, phụ kiện và dịch vụ phù hợp cho thú cưng.
                                 </p>
                             </td>
 
@@ -84,6 +101,7 @@
                                         <a asp-action="Update"
                                            asp-route-id="@category.Id"
                                            title="Sửa">
+                                            <i class="fa-solid fa-pen"></i>
                                             Sửa
                                         </a>
 
@@ -91,6 +109,7 @@
                                            asp-action="Delete"
                                            asp-route-id="@category.Id"
                                            title="Xóa">
+                                            <i class="fa-regular fa-trash-can"></i>
                                             Xóa
                                         </a>
                                     </div>
@@ -102,8 +121,12 @@
             </table>
 
             <div class="category-table-footer">
-                <span>Hiển thị @categories.Count danh mục</span>
-                <div><strong>1</strong></div>
+                <span>Hiển thị @categories.Count danh mục trong hệ thống PetLounge</span>
+                <div>
+                    <button type="button" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                    <strong>1</strong>
+                    <button type="button"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
             </div>
         </section>
     </main>

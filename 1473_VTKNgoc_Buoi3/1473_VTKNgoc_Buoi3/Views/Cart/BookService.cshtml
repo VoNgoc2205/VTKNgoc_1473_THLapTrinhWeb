@@ -1,0 +1,73 @@
+@model _1473_VTKNgoc_Buoi3.Models.ServiceBookingViewModel
+
+@{
+    ViewData["Title"] = "Đặt lịch dịch vụ";
+}
+
+<section class="booking-page">
+    <div class="booking-card">
+        <div class="booking-service">
+            <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/avatar-default.jpg" : Model.ImageUrl)" alt="@Model.ServiceName" />
+            <div>
+                <span>Dịch vụ PetLounge</span>
+                <h1>@Model.ServiceName</h1>
+                <strong>@Model.Price.ToString("N0") VNĐ</strong>
+                <p>Điền thông tin thú cưng và lịch hẹn trước khi thêm dịch vụ vào giỏ hàng.</p>
+            </div>
+        </div>
+
+        <form asp-action="BookService" method="post" class="booking-form">
+            @Html.AntiForgeryToken()
+            <input asp-for="ProductId" type="hidden" />
+
+            <div class="booking-grid">
+                <div class="booking-field">
+                    <label asp-for="PetName">Tên thú cưng</label>
+                    <input asp-for="PetName" placeholder="Ví dụ: Milo" />
+                    <span asp-validation-for="PetName" class="text-danger"></span>
+                </div>
+
+                <div class="booking-field">
+                    <label asp-for="PetType">Loại thú cưng</label>
+                    <input asp-for="PetType" placeholder="Ví dụ: Chó, mèo, thỏ..." />
+                    <span asp-validation-for="PetType" class="text-danger"></span>
+                </div>
+
+                <div class="booking-field">
+                    <label asp-for="PetAge">Tuổi</label>
+                    <input asp-for="PetAge" placeholder="Ví dụ: 2 tuổi" />
+                    <span asp-validation-for="PetAge" class="text-danger"></span>
+                </div>
+
+                <div class="booking-field">
+                    <label asp-for="PetBreed">Giống loài</label>
+                    <input asp-for="PetBreed" placeholder="Ví dụ: Poodle, Anh lông ngắn..." />
+                    <span asp-validation-for="PetBreed" class="text-danger"></span>
+                </div>
+
+                <div class="booking-field booking-full">
+                    <label asp-for="AppointmentAt">Thời gian hẹn</label>
+                    <input asp-for="AppointmentAt" type="datetime-local" />
+                    <span asp-validation-for="AppointmentAt" class="text-danger"></span>
+                </div>
+
+                <div class="booking-field booking-full">
+                    <label asp-for="CustomerNote">Ghi chú</label>
+                    <textarea asp-for="CustomerNote" rows="4" placeholder="Tình trạng thú cưng, yêu cầu thêm..."></textarea>
+                </div>
+            </div>
+
+            <div class="booking-actions">
+                <a asp-controller="Product" asp-action="Services">Quay lại dịch vụ</a>
+                <button type="submit">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Thêm lịch hẹn vào giỏ
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

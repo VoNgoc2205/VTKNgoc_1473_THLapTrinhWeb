@@ -10,13 +10,16 @@ namespace _1473_VTKNgoc_Buoi3.Areas.Identity.Pages.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IWebHostEnvironment _environment;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _environment = environment;
         }
 
         [BindProperty]
@@ -49,6 +52,7 @@ namespace _1473_VTKNgoc_Buoi3.Areas.Identity.Pages.Account
 
             [Required(ErrorMessage = "Vui lòng xác nhận mật khẩu")]
             [DataType(DataType.Password)]
+            [Compare(nameof(Password), ErrorMessage = "Mật khẩu xác nhận không khớp.")]
             public string ConfirmPassword { get; set; } = "";
         }
 
@@ -73,9 +77,17 @@ namespace _1473_VTKNgoc_Buoi3.Areas.Identity.Pages.Account
 
             if (Input.AvatarFile != null && Input.AvatarFile.Length > 0)
             {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                var extension = Path.GetExtension(Input.AvatarFile.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ErrorMessage = "Chỉ được tải ảnh JPG, PNG, GIF hoặc WEBP.";
+                    return Page();
+                }
+
                 var uploadsFolder = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot",
+                    _environment.WebRootPath,
                     "images",
                     "avatars"
                 );
@@ -85,7 +97,7 @@ namespace _1473_VTKNgoc_Buoi3.Areas.Identity.Pages.Account
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Input.AvatarFile.FileName);
+                var fileName = $"{Guid.NewGuid()}{extension}";
                 var filePath = Path.Combine(uploadsFolder, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))

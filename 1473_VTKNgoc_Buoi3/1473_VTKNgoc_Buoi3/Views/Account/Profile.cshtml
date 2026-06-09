@@ -1,130 +1,198 @@
-﻿@model _1473_VTKNgoc_Buoi3.Models.ApplicationUser
+@model _1473_VTKNgoc_Buoi3.Models.ApplicationUser
 
 @{
-    ViewData["Title"] = "Tài khoản";
+    ViewData["Title"] = "Thông tin cá nhân";
     var avatar = string.IsNullOrEmpty(Model.AvatarUrl)
         ? "/images/avatar-default.jpg"
         : Model.AvatarUrl;
 }
 
-<div class="profile-page">
-    <div class="profile-sidebar">
-        <img src="@avatar" class="profile-avatar" alt="Avatar" />
-
-        <h3>@(string.IsNullOrEmpty(Model.FullName) ? Model.Email : Model.FullName)</h3>
-        <p>@Model.Email</p>
-
-        <a class="profile-menu active">
-            <i class="fa-solid fa-user"></i>
-            Thông tin cá nhân
-        </a>
-
-        <a class="profile-menu">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-            Lịch sử đơn hàng
-        </a>
-
-        <a class="profile-menu">
-            <i class="fa-solid fa-gear"></i>
-            Cài đặt
-        </a>
-
-        <form method="post" action="/Identity/Account/Logout">
-            @Html.AntiForgeryToken()
-            <button type="submit" class="profile-logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Đăng xuất
-            </button>
-        </form>
-    </div>
-
-    <div class="profile-content">
-        <div class="profile-hero">
-            <img src="@avatar" class="hero-avatar" alt="Avatar" />
-
-            <div>
-                <h1>@(string.IsNullOrEmpty(Model.FullName) ? "Người dùng PetLounge" : Model.FullName)</h1>
-                <p>Thành viên PetLounge</p>
-            </div>
+<section class="account-page-shared">
+    <section class="account-content">
+        <div class="account-title">
+            <span class="account-kicker">PetLounge Account</span>
+            <h1>Thông tin cá nhân</h1>
+            <p>Cập nhật hồ sơ, ảnh đại diện và thông tin liên hệ để PetLounge hỗ trợ bạn nhanh hơn.</p>
         </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success account-alert">
+                @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger account-alert">
+                @TempData["Error"]
+            </div>
+        }
 
         <form asp-action="Profile"
               method="post"
               enctype="multipart/form-data"
-              class="profile-card">
+              class="account-form">
 
             @Html.AntiForgeryToken()
 
-            <div class="profile-card-header">
-                <h2>Thông tin cá nhân</h2>
-
-                <button type="submit" class="save-profile-btn">
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    Lưu thông tin
-                </button>
-            </div>
-
-            @if (TempData["Success"] != null)
-            {
-                <div class="alert alert-success">
-                    @TempData["Success"]
+            <section class="account-card account-avatar-card">
+                <div class="account-avatar-wrap">
+                    <img id="avatarPreview" src="@avatar" alt="Ảnh đại diện" />
+                    <label for="AvatarFile" title="Tải ảnh mới">
+                        <i class="fa-solid fa-pen"></i>
+                    </label>
                 </div>
-            }
 
-            <div class="profile-avatar-upload">
-                <img src="@avatar" class="profile-avatar-preview" alt="Avatar preview" />
-
-                <div>
-                    <label>Ảnh đại diện</label>
-                    <input type="file"
+                <div class="account-avatar-copy">
+                    <h2>Ảnh đại diện</h2>
+                    <p>Hỗ trợ JPG, PNG, GIF và WEBP. Ảnh mới sẽ thay thế ảnh hiện tại sau khi lưu.</p>
+                    <div class="account-avatar-actions">
+                        <label for="AvatarFile">Tải ảnh lên</label>
+                        
+                    </div>
+                    <input id="AvatarFile"
+                           type="file"
                            name="AvatarFile"
-                           class="form-control"
-                           accept="image/*" />
-                    <small>Chọn ảnh mới nếu muốn thay đổi ảnh đại diện.</small>
+                           accept="image/*"
+                           hidden />
+                    <small id="avatarFileName" class="account-avatar-note">Chưa chọn ảnh mới</small>
                 </div>
-            </div>
+            </section>
 
-            <div class="profile-grid">
-                <div>
-                    <label>Họ và tên</label>
-                    <input asp-for="FullName" placeholder="Nhập họ và tên" />
+            <section class="account-card">
+                <h2 class="account-section-title">
+                    <i class="fa-regular fa-address-card"></i>
+                    Chi tiết cá nhân
+                </h2>
+
+                <div class="account-grid">
+                    <div class="account-field">
+                        <label asp-for="FullName">Họ và tên</label>
+                        <input asp-for="FullName" placeholder="Nhập họ và tên" />
+                        <span asp-validation-for="FullName" class="text-danger account-validation"></span>
+                    </div>
+
+                    <div class="account-field account-email-field">
+                        <label>Email</label>
+                        <div>
+                            <input value="@Model.Email" readonly />
+                            <span>
+                                <i class="fa-regular fa-circle-check"></i>
+                                @(Model.EmailConfirmed ? "Đã xác minh" : "Chưa xác minh")
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="PhoneNumber">Số điện thoại</label>
+                        <input asp-for="PhoneNumber" placeholder="Nhập số điện thoại" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger account-validation"></span>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="BirthDate">Ngày sinh</label>
+                        <input asp-for="BirthDate" type="date" />
+                        <span asp-validation-for="BirthDate" class="text-danger account-validation"></span>
+                    </div>
+
+                    <div class="account-field account-radio-field">
+                        <label>Giới tính</label>
+                        <div class="account-radio-row">
+                            <label>
+                                <input asp-for="Gender" type="radio" value="Nam" />
+                                <span>Nam</span>
+                            </label>
+                            <label>
+                                <input asp-for="Gender" type="radio" value="Nữ" />
+                                <span>Nữ</span>
+                            </label>
+                            <label>
+                                <input asp-for="Gender" type="radio" value="Khác" />
+                                <span>Khác</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="account-card">
+                <h2 class="account-section-title">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Địa chỉ liên hệ
+                </h2>
+
+                <div class="account-grid">
+                    <div class="account-field account-full">
+                        <label asp-for="Address">Địa chỉ</label>
+                        <input asp-for="Address" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, thành phố" />
+                        <span asp-validation-for="Address" class="text-danger account-validation"></span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="account-card account-security-card">
+                <div class="account-security-copy">
+                    <span>
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </span>
+                    <div>
+                        <h2>Bảo mật tài khoản</h2>
+                        <p>Cập nhật mật khẩu định kỳ để bảo vệ tài khoản của bạn.</p>
+                    </div>
                 </div>
 
-                <div>
-                    <label>Email</label>
-                    <input value="@Model.Email" readonly />
-                </div>
+                <a asp-action="ChangePassword">Đổi mật khẩu</a>
+            </section>
 
-                <div>
-                    <label>Số điện thoại</label>
-                    <input asp-for="PhoneNumber" placeholder="Nhập số điện thoại" />
-                </div>
+            <section class="account-history-shortcuts">
+                <a asp-action="OrderHistory">
+                    <i class="fa-solid fa-box-open"></i>
+                    <span>
+                        <strong>Lịch sử đơn hàng</strong>
+                        <small>Đang giao, đã nhận, đã hủy...</small>
+                    </span>
+                </a>
 
-                <div>
-                    <label>Giới tính</label>
-                    <select asp-for="Gender">
-                        <option value="">-- Chọn giới tính --</option>
-                        <option value="Nam">Nam</option>
-                        <option value="Nữ">Nữ</option>
-                        <option value="Khác">Khác</option>
-                    </select>
-                </div>
+                <a asp-action="ServiceHistory">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>
+                        <strong>Lịch sử đặt dịch vụ</strong>
+                        <small>Lịch hẹn, xác nhận và hoàn thành</small>
+                    </span>
+                </a>
+            </section>
 
-                <div>
-                    <label>Ngày sinh</label>
-                    <input asp-for="BirthDate" type="date" />
-                </div>
-
-                <div>
-                    <label>Trạng thái Email</label>
-                    <input value="@(Model.EmailConfirmed ? "Đã xác nhận" : "Chưa xác nhận")" readonly />
-                </div>
-
-                <div class="profile-full">
-                    <label>Địa chỉ</label>
-                    <input asp-for="Address" placeholder="Nhập địa chỉ" />
-                </div>
+            <div class="account-form-actions">
+                <a asp-controller="Home" asp-action="Index">Hủy</a>
+                <button type="submit">Lưu thay đổi</button>
             </div>
         </form>
-    </div>
-</div>
+    </section>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const avatarInput = document.getElementById('AvatarFile');
+        const avatarPreview = document.getElementById('avatarPreview');
+        const avatarFileName = document.getElementById('avatarFileName');
+
+        avatarInput?.addEventListener('change', function () {
+            const file = this.files && this.files[0];
+
+            if (!file) {
+                avatarFileName.textContent = 'Chưa chọn ảnh mới';
+                return;
+            }
+
+            avatarFileName.textContent = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                avatarPreview.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+}

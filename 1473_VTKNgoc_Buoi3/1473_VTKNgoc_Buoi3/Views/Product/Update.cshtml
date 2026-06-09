@@ -15,14 +15,8 @@
 
             <div class="edit-heading">
                 <div>
-                    <div class="admin-breadcrumb">
-                        <a asp-action="@(isService ? "Services" : "Index")">@(isService ? "Dịch vụ" : "Sản phẩm")</a>
-                        <span>/</span>
-                        <strong>Chỉnh sửa</strong>
-                    </div>
                     <h1>Chỉnh sửa @itemLabel: <span>@Model.Name</span></h1>
                 </div>
-                <div class="business-status"><span>Trạng thái:</span><strong>Đang hiển thị</strong><b>#@Model.Id</b></div>
             </div>
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -72,10 +66,13 @@
 
                 <aside class="edit-side">
                     <section class="action-card">
+                        <div class="business-status"><span>Trạng thái:</span><strong>Đang hiển thị</strong><b>#@Model.Id</b></div>
                         <h2>Thao tác</h2>
-                        <button type="submit">Cập nhật</button>
-                        <a asp-action="Display" asp-route-id="@Model.Id" asp-route-type="@routeType">Xem chi tiết</a>
-                        <a class="delete-action" asp-action="Delete" asp-route-id="@Model.Id" asp-route-type="@routeType">Xóa @itemLabel</a>
+                        <div class="action-card-buttons">
+                            <button type="submit">Cập nhật</button>
+                            <a asp-action="Display" asp-route-id="@Model.Id" asp-route-type="@routeType">Xem chi tiết</a>
+                            <a class="delete-action" asp-action="Delete" asp-route-id="@Model.Id" asp-route-type="@routeType">Xóa @itemLabel</a>
+                        </div>
                     </section>
                 </aside>
             </div>

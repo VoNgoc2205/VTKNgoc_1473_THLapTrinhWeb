@@ -8,14 +8,6 @@
 }
 
 <section class="product-detail-page">
-    <nav class="breadcrumb-line">
-        <a asp-controller="Home" asp-action="Index">Trang chủ</a>
-        <span>/</span>
-        <a asp-action="@(isService ? "Services" : "Index")">@(isService ? "Dịch vụ" : "Cửa hàng")</a>
-        <span>/</span>
-        <strong>@Model.Name</strong>
-    </nav>
-
     <section class="product-detail-hero">
         <div class="product-detail-gallery">
             <div class="product-main-photo">
@@ -65,7 +57,17 @@
                         </a>
                     }
 
-                    @if (User.Identity?.IsAuthenticated == true)
+                    @if (User.Identity?.IsAuthenticated == true && isService)
+                    {
+                        <a class="cart-product-btn"
+                           asp-controller="Cart"
+                           asp-action="BookService"
+                           asp-route-id="@Model.Id">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            Đặt lịch dịch vụ
+                        </a>
+                    }
+                    else if (User.Identity?.IsAuthenticated == true)
                     {
                         <a class="cart-product-btn"
                            asp-controller="Cart"

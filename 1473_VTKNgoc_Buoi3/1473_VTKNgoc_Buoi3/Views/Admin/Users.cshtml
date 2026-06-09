@@ -1,0 +1,83 @@
+@model List<_1473_VTKNgoc_Buoi3.Models.AdminUserViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+}
+
+<section class="admin-manage-page">
+    <div class="admin-manage-head">
+        <div>
+            <span>Admin Console</span>
+            <h1>Quản lý người dùng</h1>
+            <p>Theo dõi tài khoản khách hàng và khóa/mở khóa khi cần thiết.</p>
+        </div>
+        <a class="admin-create-link" asp-action="CreateAdmin">
+            <i class="fa-solid fa-user-shield"></i>
+            Tạo tài khoản Admin
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <section class="admin-manage-card">
+        <table class="admin-manage-table">
+            <thead>
+                <tr>
+                    <th>Người dùng</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong>@(string.IsNullOrWhiteSpace(user.FullName) ? "Chưa cập nhật" : user.FullName)</strong>
+                            <small>@(user.PhoneNumber ?? "Chưa có số điện thoại")</small>
+                        </td>
+                        <td>@user.Email</td>
+                        <td>@user.Roles</td>
+                        <td>
+                            <span class="admin-status @(user.IsLocked ? "locked" : "")">
+                                @(user.IsLocked ? "Đang khóa" : "Đang hoạt động")
+                            </span>
+                        </td>
+                        <td>
+                            @if (user.Roles.Contains("Admin"))
+                            {
+                                <span class="admin-muted">Tài khoản quản trị</span>
+                            }
+                            else
+                            {
+                                <form asp-action="ToggleUserLock" method="post" class="admin-lock-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <button class="admin-switch @(user.IsLocked ? "locked" : "")"
+                                            type="submit"
+                                            title="@(user.IsLocked ? "Mở khóa tài khoản" : "Khóa tài khoản")"
+                                            aria-label="@(user.IsLocked ? "Mở khóa tài khoản" : "Khóa tài khoản")">
+                                        <span></span>
+                                    </button>
+                                    <strong class="admin-switch-label">
+                                        @(user.IsLocked ? "Khóa" : "Mở")
+                                    </strong>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</section>

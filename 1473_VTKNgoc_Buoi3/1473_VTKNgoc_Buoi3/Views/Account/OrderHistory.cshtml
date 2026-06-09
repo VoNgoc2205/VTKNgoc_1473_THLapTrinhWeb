@@ -1,0 +1,80 @@
+@model List<_1473_VTKNgoc_Buoi3.Models.Order>
+
+@{
+    ViewData["Title"] = "Lịch sử đơn hàng";
+}
+
+<section class="account-history-page">
+    <div class="account-title">
+        <span class="account-kicker">PetLounge Account</span>
+        <h1>Lịch sử đơn hàng</h1>
+        <p>Theo dõi các đơn sản phẩm bạn đã đặt và trạng thái giao hàng hiện tại.</p>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success admin-page-alert">@TempData["Success"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger admin-page-alert">@TempData["Error"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="history-empty">
+            <h2>Bạn chưa có đơn sản phẩm</h2>
+            <p>Các sản phẩm sau khi đặt hàng sẽ được lưu tại đây.</p>
+            <a asp-controller="Product" asp-action="Index">Mua sắm ngay</a>
+        </div>
+    }
+    else
+    {
+        <div class="history-list">
+            @foreach (var order in Model)
+            {
+                var productItems = order.Items.Where(i => !i.IsService).ToList();
+                var canCancel = order.Status == "Chờ xác nhận" || order.Status == "Đang xử lý";
+
+                <article class="history-order-card">
+                    <div class="history-order-head">
+                        <div>
+                            <strong>Đơn hàng @order.Id</strong>
+                            <span>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                        <em>@order.Status</em>
+                    </div>
+
+                    <div class="history-order-items">
+                        @foreach (var item in productItems)
+                        {
+                            <div>
+                                <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? "/images/avatar-default.jpg" : item.ImageUrl)" alt="@item.ProductName" />
+                                <div>
+                                    <strong>@item.ProductName</strong>
+                                    <span>Số lượng: @item.Quantity</span>
+                                </div>
+                                <b>@item.Total.ToString("N0") VNĐ</b>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="history-order-total">
+                        <span>Tổng tiền</span>
+                        <strong>@productItems.Sum(i => i.Total).ToString("N0") VNĐ</strong>
+                    </div>
+
+                    @if (canCancel)
+                    {
+                        <form asp-action="CancelOrder" method="post" class="history-cancel-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@order.Id" />
+                            <button type="submit" onclick="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?')">Hủy đơn hàng</button>
+                        </form>
+                    }
+                </article>
+            }
+        </div>
+    }
+</section>

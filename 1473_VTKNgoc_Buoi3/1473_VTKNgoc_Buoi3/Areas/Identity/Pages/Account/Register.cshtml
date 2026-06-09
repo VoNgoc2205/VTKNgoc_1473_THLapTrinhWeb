@@ -1,4 +1,4 @@
-﻿@page "/Identity/Account/Register"
+@page "/Identity/Account/Register"
 @model _1473_VTKNgoc_Buoi3.Areas.Identity.Pages.Account.RegisterModel
 
 @{
@@ -6,98 +6,158 @@
     Layout = "/Views/Shared/_Layout.cshtml";
 }
 
-<div class="register-page">
-    <div class="register-card register-card-wide">
-        <div class="register-header">
-            <div class="register-logo">🐾</div>
-            <h2>Tạo tài khoản PetLounge</h2>
-            <p>Điền thông tin cá nhân để bắt đầu sử dụng dịch vụ chăm sóc thú cưng.</p>
+<section class="auth-page auth-page-wide">
+    <div class="auth-hero">
+        <span>PetLounge Member</span>
+        <h1>Tạo tài khoản mới</h1>
+        <p>Lưu thông tin cá nhân, theo dõi đơn hàng và đặt dịch vụ chăm sóc thú cưng nhanh hơn.</p>
+    </div>
+
+    <section class="auth-card auth-card-wide" aria-labelledby="register-title">
+        <div class="auth-card-head">
+            <h2 id="register-title">Đăng ký</h2>
+            <p>Điền thông tin để bắt đầu sử dụng PetLounge.</p>
         </div>
 
-        <form method="post" enctype="multipart/form-data">
-
+        <form method="post" enctype="multipart/form-data" class="auth-form">
             @if (!string.IsNullOrEmpty(Model.ErrorMessage))
             {
-                <div class="alert alert-danger">@Model.ErrorMessage</div>
+                <div class="alert alert-danger auth-alert">@Model.ErrorMessage</div>
             }
 
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger auth-validation-summary"></div>
 
-            <div class="avatar-upload">
-                <img src="~/images/avatar-default.jpg" class="register-avatar-preview" />
+            <div class="auth-avatar">
+                <img id="registerAvatarPreview" src="~/images/avatar-default.jpg" alt="Ảnh đại diện" />
                 <div>
-                    <label>Ảnh đại diện</label>
-                    <input asp-for="Input.AvatarFile" type="file" class="form-control" accept="image/*" />
+                    <label asp-for="Input.AvatarFile">Ảnh đại diện</label>
+                    <p>Chọn ảnh JPG, PNG, GIF hoặc WEBP để hồ sơ dễ nhận diện hơn.</p>
+                    <input asp-for="Input.AvatarFile" id="RegisterAvatarFile" type="file" accept="image/*" />
                 </div>
             </div>
 
-            <div class="register-grid">
-                <div class="form-group">
-                    <label>Họ và tên</label>
-                    <input asp-for="Input.FullName" class="form-control" placeholder="Nguyễn Văn A" />
-                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+            <div class="auth-grid">
+                <div class="auth-field">
+                    <label asp-for="Input.FullName">Họ và tên</label>
+                    <div class="auth-input">
+                        <i class="fa-regular fa-user"></i>
+                        <input asp-for="Input.FullName" placeholder="Nguyễn Văn A" />
+                    </div>
+                    <span asp-validation-for="Input.FullName" class="text-danger auth-validation"></span>
                 </div>
 
-                <div class="form-group">
-                    <label>Email</label>
-                    <input asp-for="Input.Email" class="form-control" placeholder="email@vi-du.com" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <div class="auth-field">
+                    <label asp-for="Input.Email">Email</label>
+                    <div class="auth-input">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input asp-for="Input.Email" placeholder="email@vi-du.com" autocomplete="username" />
+                    </div>
+                    <span asp-validation-for="Input.Email" class="text-danger auth-validation"></span>
                 </div>
 
-                <div class="form-group">
-                    <label>Số điện thoại</label>
-                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="0901234567" />
-                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                <div class="auth-field">
+                    <label asp-for="Input.PhoneNumber">Số điện thoại</label>
+                    <div class="auth-input">
+                        <i class="fa-solid fa-phone"></i>
+                        <input asp-for="Input.PhoneNumber" placeholder="0901234567" />
+                    </div>
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger auth-validation"></span>
                 </div>
 
-                <div class="form-group">
-                    <label>Ngày sinh</label>
-                    <input asp-for="Input.BirthDate" type="date" class="form-control" />
-                    <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
+                <div class="auth-field">
+                    <label asp-for="Input.BirthDate">Ngày sinh</label>
+                    <div class="auth-input">
+                        <i class="fa-regular fa-calendar"></i>
+                        <input asp-for="Input.BirthDate" type="date" />
+                    </div>
+                    <span asp-validation-for="Input.BirthDate" class="text-danger auth-validation"></span>
                 </div>
 
-                <div class="form-group">
-                    <label>Giới tính</label>
-                    <select asp-for="Input.Gender" class="form-control">
-                        <option value="">-- Chọn giới tính --</option>
-                        <option value="Nam">Nam</option>
-                        <option value="Nữ">Nữ</option>
-                        <option value="Khác">Khác</option>
-                    </select>
-                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                <div class="auth-field">
+                    <label asp-for="Input.Gender">Giới tính</label>
+                    <div class="auth-input">
+                        <i class="fa-solid fa-venus-mars"></i>
+                        <select asp-for="Input.Gender">
+                            <option value="">Chọn giới tính</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Input.Gender" class="text-danger auth-validation"></span>
                 </div>
 
-                <div class="form-group">
-                    <label>Địa chỉ</label>
-                    <input asp-for="Input.Address" class="form-control" placeholder="TP.HCM, Việt Nam" />
-                    <span asp-validation-for="Input.Address" class="text-danger"></span>
+                <div class="auth-field">
+                    <label asp-for="Input.Address">Địa chỉ</label>
+                    <div class="auth-input">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <input asp-for="Input.Address" placeholder="TP.HCM, Việt Nam" />
+                    </div>
+                    <span asp-validation-for="Input.Address" class="text-danger auth-validation"></span>
                 </div>
 
-                <div class="form-group">
-                    <label>Mật khẩu</label>
-                    <input asp-for="Input.Password" type="password" class="form-control" placeholder="Admin@123" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <div class="auth-field">
+                    <label asp-for="Input.Password">Mật khẩu</label>
+                    <div class="auth-input">
+                        <i class="fa-solid fa-lock"></i>
+                        <input asp-for="Input.Password"
+                               class="password-toggle-input"
+                               type="password"
+                               placeholder="Nhập mật khẩu"
+                               autocomplete="new-password" />
+                        <button type="button" class="password-toggle-btn" aria-label="Hiện mật khẩu">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Input.Password" class="text-danger auth-validation"></span>
                 </div>
 
-                <div class="form-group">
-                    <label>Xác nhận mật khẩu</label>
-                    <input asp-for="Input.ConfirmPassword" type="password" class="form-control" placeholder="Admin@123" />
-                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                <div class="auth-field">
+                    <label asp-for="Input.ConfirmPassword">Xác nhận mật khẩu</label>
+                    <div class="auth-input">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <input asp-for="Input.ConfirmPassword"
+                               class="password-toggle-input"
+                               type="password"
+                               placeholder="Nhập lại mật khẩu"
+                               autocomplete="new-password" />
+                        <button type="button" class="password-toggle-btn" aria-label="Hiện mật khẩu">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger auth-validation"></span>
                 </div>
             </div>
 
-            <button type="submit" class="register-submit">
-                Tạo tài khoản →
+            <button type="submit" class="auth-submit">
+                <span>Tạo tài khoản</span>
+                <i class="fa-solid fa-arrow-right"></i>
             </button>
         </form>
 
-        <p class="login-text">
+        <p class="auth-switch">
             Đã có tài khoản?
-            <a href="/Identity/Account/Login">Đăng nhập</a>
+            <a asp-page="/Account/Login">Đăng nhập</a>
         </p>
-    </div>
-</div>
+    </section>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/password-toggle.js" asp-append-version="true"></script>
+    <script>
+        const registerAvatarInput = document.getElementById('RegisterAvatarFile');
+        const registerAvatarPreview = document.getElementById('registerAvatarPreview');
+
+        registerAvatarInput?.addEventListener('change', function () {
+            const file = this.files && this.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = event => {
+                registerAvatarPreview.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
 }

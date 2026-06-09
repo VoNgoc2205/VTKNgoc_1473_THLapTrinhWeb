@@ -1,0 +1,70 @@
+@model _1473_VTKNgoc_Buoi3.Models.CreateAdminViewModel
+
+@{
+    ViewData["Title"] = "Tạo tài khoản Admin";
+}
+
+<section class="admin-manage-page">
+    <div class="admin-manage-head">
+        <div>
+            <span>Admin Console</span>
+            <h1>Tạo tài khoản Admin</h1>
+            <p>Tạo tài khoản quản trị mới có quyền quản lý người dùng, danh mục, sản phẩm và đơn hàng.</p>
+        </div>
+        <a class="admin-create-link soft" asp-action="Users">
+            <i class="fa-solid fa-arrow-left"></i>
+            Quay lại
+        </a>
+    </div>
+
+    <section class="admin-form-card">
+        <form asp-action="CreateAdmin" method="post" class="admin-create-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger admin-validation-summary"></div>
+
+            <div class="admin-form-grid">
+                <div class="admin-form-field">
+                    <label asp-for="FullName">Họ tên</label>
+                    <input asp-for="FullName" placeholder="Admin PetLounge" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-field">
+                    <label asp-for="Email">Email</label>
+                    <input asp-for="Email" type="email" placeholder="admin2@gmail.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-field admin-form-full">
+                    <label asp-for="PhoneNumber">Số điện thoại</label>
+                    <input asp-for="PhoneNumber" placeholder="0901234567" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-field">
+                    <label asp-for="Password">Mật khẩu</label>
+                    <input asp-for="Password" type="password" placeholder="Admin@123" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-field">
+                    <label asp-for="ConfirmPassword">Xác nhận mật khẩu</label>
+                    <input asp-for="ConfirmPassword" type="password" placeholder="Admin@123" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="admin-form-actions">
+                <a asp-action="Users">Hủy</a>
+                <button type="submit">
+                    <i class="fa-solid fa-user-shield"></i>
+                    Tạo Admin
+                </button>
+            </div>
+        </form>
+    </section>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

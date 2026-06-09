@@ -12,8 +12,8 @@ using _1473_VTKNgoc_Buoi3.Models;
 namespace _1473_VTKNgoc_Buoi3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260605074456_ExtendApplicationUser")]
-    partial class ExtendApplicationUser
+    [Migration("20260605114937_ThemDichVu")]
+    partial class ThemDichVu
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

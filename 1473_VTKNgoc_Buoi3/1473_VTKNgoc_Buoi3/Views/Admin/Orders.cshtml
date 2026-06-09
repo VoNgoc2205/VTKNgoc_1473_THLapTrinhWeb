@@ -1,0 +1,157 @@
+@model List<_1473_VTKNgoc_Buoi3.Models.Order>
+
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+    decimal totalRevenue = ViewBag.TotalRevenue ?? 0;
+    decimal productRevenue = ViewBag.ProductRevenue ?? 0;
+    decimal serviceRevenue = ViewBag.ServiceRevenue ?? 0;
+    var orderStatuses = new[] { "Chờ xác nhận", "Đang xử lý", "Đang giao", "Đã nhận", "Đã hủy" };
+    var serviceStatuses = new[] { "Chờ xác nhận lịch", "Đã xác nhận", "Đang phục vụ", "Hoàn thành", "Đã hủy" };
+}
+
+<section class="admin-manage-page">
+    <div class="admin-manage-head">
+        <div>
+            <span>Admin Console</span>
+            <h1>Quản lý đơn hàng</h1>
+            <p>Theo dõi đơn sản phẩm, lịch đặt dịch vụ, doanh thu và cập nhật trạng thái xử lý cho khách hàng.</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success admin-page-alert">@TempData["Success"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger admin-page-alert">@TempData["Error"]</div>
+    }
+
+    <div class="admin-revenue-grid">
+        <article>
+            <span>Tổng doanh thu</span>
+            <strong>@totalRevenue.ToString("N0") VNĐ</strong>
+        </article>
+        <article>
+            <span>Doanh thu sản phẩm</span>
+            <strong>@productRevenue.ToString("N0") VNĐ</strong>
+        </article>
+        <article>
+            <span>Doanh thu dịch vụ</span>
+            <strong>@serviceRevenue.ToString("N0") VNĐ</strong>
+        </article>
+    </div>
+
+    <section class="admin-manage-card">
+        @if (!Model.Any())
+        {
+            <div class="admin-empty">
+                <h2>Chưa có đơn hàng</h2>
+                <p>Các đơn hàng và lịch đặt dịch vụ sau khi khách xác nhận giỏ hàng sẽ xuất hiện tại đây.</p>
+            </div>
+        }
+        else
+        {
+            <table class="admin-manage-table admin-orders-table">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Nội dung đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái đơn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>Đơn @order.Id</strong>
+                                <small>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                            </td>
+                            <td>
+                                <strong>@order.CustomerName</strong>
+                                <small>@order.CustomerEmail</small>
+                                @if (!string.IsNullOrWhiteSpace(order.CustomerPhone))
+                                {
+                                    <small>@order.CustomerPhone</small>
+                                }
+                            </td>
+                            <td>
+                                <div class="admin-order-items">
+                                    @foreach (var item in order.Items)
+                                    {
+                                        <div class="admin-order-item-row">
+                                            <div>
+                                                <strong>@item.ProductName</strong>
+                                                <span>
+                                                    @(item.IsService ? "Dịch vụ" : "Sản phẩm") -
+                                                    SL: @item.Quantity -
+                                                    @item.Total.ToString("N0") VNĐ
+                                                </span>
+                                                @if (item.IsService)
+                                                {
+                                                    <small>Lịch hẹn: @item.AppointmentAt?.ToString("dd/MM/yyyy HH:mm")</small>
+                                                    <small>Thú cưng: @item.PetName - @item.PetType - @item.PetAge - @item.PetBreed</small>
+                                                    @if (!string.IsNullOrWhiteSpace(item.CustomerNote))
+                                                    {
+                                                        <small>Ghi chú: @item.CustomerNote</small>
+                                                    }
+                                                }
+                                            </div>
+
+                                            @if (item.IsService)
+                                            {
+                                                <form asp-action="UpdateServiceStatus" method="post" class="admin-status-form">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    <select name="status">
+                                                        @foreach (var status in serviceStatuses)
+                                                        {
+                                                            if (item.ItemStatus == status)
+                                                            {
+                                                                <option value="@status" selected>@status</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@status">@status</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <button type="submit">Cập nhật</button>
+                                                </form>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                            <td><strong>@order.TotalAmount.ToString("N0") VNĐ</strong></td>
+                            <td>
+                                <form asp-action="UpdateOrderStatus" method="post" class="admin-status-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@order.Id" />
+                                    <select name="status">
+                                        @foreach (var status in orderStatuses)
+                                        {
+                                            if (order.Status == status)
+                                            {
+                                                <option value="@status" selected>@status</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@status">@status</option>
+                                            }
+                                        }
+                                    </select>
+                                    <button type="submit">Lưu</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+</section>
