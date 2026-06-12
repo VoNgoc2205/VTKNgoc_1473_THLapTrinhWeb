@@ -1,0 +1,104 @@
+@model _1473_VTKNgoc_Buoi3.Models.Voucher
+
+@{
+    ViewData["Title"] = "Quản lý voucher";
+    var vouchers = ViewBag.Vouchers as IReadOnlyList<_1473_VTKNgoc_Buoi3.Models.Voucher>
+        ?? Array.Empty<_1473_VTKNgoc_Buoi3.Models.Voucher>();
+}
+
+<section class="admin-manage-page">
+    <div class="admin-manage-head">
+        <div>
+            <span>Admin Console</span>
+            <h1>Quản lý voucher</h1>
+            <p>Tạo mã giảm giá để khách hàng áp dụng trực tiếp ở trang thanh toán.</p>
+        </div>
+        <a class="admin-create-link soft" asp-action="Orders">Quay lại đơn hàng</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success admin-page-alert">@TempData["Success"]</div>
+    }
+
+    <div class="admin-dashboard-grid">
+        <section class="admin-form-card">
+            <form asp-action="Vouchers" method="post" class="admin-create-form">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger admin-validation-summary"></div>
+
+                <div class="admin-form-grid">
+                    <div class="admin-form-field">
+                        <label asp-for="Code">Mã voucher</label>
+                        <input asp-for="Code" placeholder="VD: PET20" />
+                        <span asp-validation-for="Code" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-form-field">
+                        <label asp-for="DiscountType">Loại giảm</label>
+                        <select asp-for="DiscountType">
+                            <option value="Percent">Giảm theo phần trăm</option>
+                            <option value="Amount">Giảm tiền trực tiếp</option>
+                            <option value="FreeShip">Miễn phí vận chuyển</option>
+                        </select>
+                        <span asp-validation-for="DiscountType" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-form-field">
+                        <label asp-for="DiscountValue">Giá trị giảm</label>
+                        <input asp-for="DiscountValue" type="number" min="0" step="1000" />
+                        <span asp-validation-for="DiscountValue" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-form-field">
+                        <label asp-for="MinimumOrderAmount">Đơn tối thiểu</label>
+                        <input asp-for="MinimumOrderAmount" type="number" min="0" step="1000" />
+                        <span asp-validation-for="MinimumOrderAmount" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-form-field">
+                        <label asp-for="Quantity">Số lượng voucher</label>
+                        <input asp-for="Quantity" type="number" min="0" step="1" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-form-field">
+                        <label asp-for="ExpiresAt">Ngày hết hạn</label>
+                        <input asp-for="ExpiresAt" type="date" />
+                        <span asp-validation-for="ExpiresAt" class="text-danger"></span>
+                    </div>
+
+                    <label class="admin-checkbox-field admin-form-full">
+                        <input asp-for="IsActive" />
+                        <span>Kích hoạt voucher</span>
+                    </label>
+                </div>
+
+                <div class="admin-form-actions">
+                    <button type="submit">Lưu voucher</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="admin-manage-card voucher-list-card">
+            <h2>Voucher hiện có</h2>
+            @foreach (var voucher in vouchers)
+            {
+                <article>
+                    <div>
+                        <strong>@voucher.Code</strong>
+                        <span>@voucher.Description</span>
+                        <small>Đơn tối thiểu: @voucher.MinimumOrderAmount.ToString("N0") VNĐ</small>
+                        <small>Số lượng còn lại: @voucher.Quantity</small>
+                        <small>Hết hạn: @(voucher.ExpiresAt?.ToString("dd/MM/yyyy") ?? "Không giới hạn")</small>
+                    </div>
+                    <em class="@(voucher.IsAvailable ? "" : "muted")">@voucher.StatusText</em>
+                </article>
+            }
+        </section>
+    </div>
+</section>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

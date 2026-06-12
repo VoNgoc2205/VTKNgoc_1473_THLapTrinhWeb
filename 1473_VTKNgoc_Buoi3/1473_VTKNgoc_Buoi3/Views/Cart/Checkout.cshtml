@@ -1,0 +1,367 @@
+@model _1473_VTKNgoc_Buoi3.Models.CheckoutViewModel
+@using _1473_VTKNgoc_Buoi3.Models
+
+@{
+    var usableVouchers = VoucherStore.GetAll()
+        .Where(v => v.IsAvailable && Model.Subtotal >= v.MinimumOrderAmount)
+        .ToList();
+    ViewData["Title"] = "Thanh toán";
+}
+
+<section class="checkout-page">
+    <div class="checkout-heading">
+        <span>PetLounge Checkout</span>
+        <h1>Thanh toán đơn hàng</h1>
+        <p>Kiểm tra thông tin người đặt, địa chỉ giao hàng và chi tiết đơn trước khi xác nhận.</p>
+    </div>
+
+    <form asp-action="Checkout" method="post" class="checkout-layout">
+        @Html.AntiForgeryToken()
+        <input asp-for="Source" type="hidden" />
+        @foreach (var selectedId in Model.SelectedProductIds)
+        {
+            <input type="hidden" name="SelectedProductIds" value="@selectedId" />
+        }
+
+        <section class="checkout-panel">
+            <h2>Thông tin đặt hàng</h2>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success cart-alert">@TempData["Success"]</div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger cart-alert">@TempData["Error"]</div>
+            }
+
+            <div class="checkout-grid">
+                <div class="checkout-field">
+                    <label asp-for="CustomerName">Tên người đặt</label>
+                    <input asp-for="CustomerName" />
+                    <span asp-validation-for="CustomerName" class="text-danger"></span>
+                </div>
+
+                <div class="checkout-field">
+                    <label asp-for="CustomerPhone">Số điện thoại</label>
+                    <input asp-for="CustomerPhone" />
+                    <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+                </div>
+
+                <div class="checkout-field checkout-full">
+                    <label asp-for="CustomerEmail">Email</label>
+                    <input asp-for="CustomerEmail" />
+                    <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+                </div>
+
+                <div class="checkout-field checkout-full">
+                    <label asp-for="CustomerAddress">Số nhà, tên đường</label>
+                    <textarea asp-for="CustomerAddress" rows="3"></textarea>
+                    <span asp-validation-for="CustomerAddress" class="text-danger"></span>
+                </div>
+
+                <div class="checkout-field">
+                    <label asp-for="Province">Tỉnh/Thành phố</label>
+                    <select asp-for="Province" id="provinceSelect" data-selected="@Model.Province">
+                        <option value="">Chọn tỉnh/thành phố</option>
+                        <option>Thành phố Hồ Chí Minh</option>
+                        <option>Hà Nội</option>
+                        <option>Đà Nẵng</option>
+                        <option>Cần Thơ</option>
+                        <option>Bình Dương</option>
+                    </select>
+                    <span asp-validation-for="Province" class="text-danger"></span>
+                </div>
+
+                <div class="checkout-field">
+                    <label asp-for="District">Quận/Huyện</label>
+                    <select asp-for="District" id="districtSelect" data-selected="@Model.District">
+                        <option value="">Chọn quận/huyện</option>
+                        <option>Quận 1</option>
+                        <option>Quận 3</option>
+                        <option>Quận 7</option>
+                        <option>Thành phố Thủ Đức</option>
+                        <option>Huyện Bình Chánh</option>
+                    </select>
+                    <span asp-validation-for="District" class="text-danger"></span>
+                </div>
+
+                <div class="checkout-field checkout-full">
+                    <label asp-for="Ward">Phường/Xã</label>
+                    <select asp-for="Ward" id="wardSelect" data-selected="@Model.Ward">
+                        <option value="">Chọn phường/xã</option>
+                        <option>Phường Bến Nghé</option>
+                        <option>Phường Võ Thị Sáu</option>
+                        <option>Phường Tân Phong</option>
+                        <option>Phường Linh Trung</option>
+                        <option>Xã Bình Hưng</option>
+                    </select>
+                    <span asp-validation-for="Ward" class="text-danger"></span>
+                </div>
+            </div>
+
+            <section class="payment-methods">
+                <h2>Phương thức thanh toán</h2>
+                <label>
+                    <input asp-for="PaymentMethod" type="radio" value="CreditCard" />
+                    <span>Thẻ tín dụng/Thẻ ghi nợ</span>
+                </label>
+                <label>
+                    <input asp-for="PaymentMethod" type="radio" value="EWallet" />
+                    <span>Ví điện tử</span>
+                </label>
+                <label>
+                    <input asp-for="PaymentMethod" type="radio" value="BankTransfer" />
+                    <span>Chuyển khoản ngân hàng</span>
+                </label>
+                <label>
+                    <input asp-for="PaymentMethod" type="radio" value="COD" />
+                    <span>Thanh toán khi nhận hàng</span>
+                </label>
+                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+            </section>
+        </section>
+
+        <aside class="checkout-panel checkout-summary-panel">
+            <h2>Chi tiết đơn hàng</h2>
+
+            <div class="checkout-items">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="checkout-item">
+                        <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? "/images/avatar-default.jpg" : item.ImageUrl)" alt="@item.ProductName" />
+                        <div>
+                            <strong>@item.ProductName</strong>
+                            <span>@item.Quantity x @item.Price.ToString("N0") VNĐ</span>
+                        </div>
+                        <b>@item.Total.ToString("N0") VNĐ</b>
+                    </div>
+                }
+            </div>
+
+            <section class="coupon-card checkout-coupon-card">
+                <h2>Mã khuyến mãi</h2>
+                <div class="coupon-form">
+                    <select name="couponCode" id="couponSelect">
+                        <option value="">Chọn mã giảm giá</option>
+                        @foreach (var voucher in usableVouchers)
+                        {
+                            var voucherText = voucher.DiscountType == "Percent"
+                                ? $"Giảm {voucher.DiscountValue:N0}%"
+                                : voucher.DiscountType == "Amount"
+                                    ? $"Giảm {voucher.DiscountValue:N0}đ"
+                                    : "Miễn phí vận chuyển";
+
+                            if (string.Equals(Model.CouponCode, voucher.Code, StringComparison.OrdinalIgnoreCase))
+                            {
+                                <option value="@voucher.Code" data-type="@voucher.DiscountType" data-value="@voucher.DiscountValue.ToString("0", System.Globalization.CultureInfo.InvariantCulture)" data-min="@voucher.MinimumOrderAmount.ToString("0", System.Globalization.CultureInfo.InvariantCulture)" selected>@voucher.Code - @voucherText</option>
+                            }
+                            else
+                            {
+                                <option value="@voucher.Code" data-type="@voucher.DiscountType" data-value="@voucher.DiscountValue.ToString("0", System.Globalization.CultureInfo.InvariantCulture)" data-min="@voucher.MinimumOrderAmount.ToString("0", System.Globalization.CultureInfo.InvariantCulture)">@voucher.Code - @voucherText</option>
+                            }
+                        }
+                    </select>
+                    <button type="submit"
+                            asp-action="ApplyCoupon"
+                            asp-route-source="@Model.Source"
+                            formmethod="post">
+                        Áp dụng
+                    </button>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.CouponCode))
+                {
+                    <button class="remove-coupon-link"
+                            type="submit"
+                            asp-action="RemoveCoupon"
+                            asp-route-source="@Model.Source"
+                            formmethod="get">
+                        Bỏ mã @Model.CouponCode
+                    </button>
+                }
+                <small>PET10 giảm 10%, PET50 giảm 50.000đ, FREESHIP miễn phí vận chuyển.</small>
+            </section>
+
+            <div class="checkout-price-lines">
+                <div><span>Tổng tiền hàng</span><strong id="checkoutSubtotal" data-value="@Model.Subtotal.ToString("0", System.Globalization.CultureInfo.InvariantCulture)">@Model.Subtotal.ToString("N0") VNĐ</strong></div>
+                <div><span>Phí vận chuyển</span><strong id="checkoutShipping" data-value="@Model.ShippingFee.ToString("0", System.Globalization.CultureInfo.InvariantCulture)">@Model.ShippingFee.ToString("N0") VNĐ</strong></div>
+                <div><span>Giảm giá</span><strong id="checkoutDiscount" data-value="@Model.Discount.ToString("0", System.Globalization.CultureInfo.InvariantCulture)">-@Model.Discount.ToString("N0") VNĐ</strong></div>
+                <div class="checkout-total"><span>Tổng thanh toán</span><strong id="checkoutTotal">@Model.Total.ToString("N0") VNĐ</strong></div>
+            </div>
+
+            <div class="checkout-actions">
+                <a asp-controller="Product" asp-action="Index">Quay lại</a>
+                <button type="submit">Xác nhận thanh toán</button>
+            </div>
+        </aside>
+    </form>
+</section>
+
+@section Scripts {
+    <script>
+        (() => {
+            const provinceSelect = document.getElementById("provinceSelect");
+            const districtSelect = document.getElementById("districtSelect");
+            const wardSelect = document.getElementById("wardSelect");
+            const couponSelect = document.getElementById("couponSelect");
+            const subtotalEl = document.getElementById("checkoutSubtotal");
+            const shippingEl = document.getElementById("checkoutShipping");
+            const discountEl = document.getElementById("checkoutDiscount");
+            const totalEl = document.getElementById("checkoutTotal");
+
+            if (!provinceSelect || !districtSelect || !wardSelect) {
+                return;
+            }
+
+            const fallbackLocations = [
+                {
+                    name: "Thành phố Hồ Chí Minh",
+                    districts: [
+                        { name: "Quận 1", wards: [{ name: "Phường Bến Nghé" }, { name: "Phường Bến Thành" }, { name: "Phường Đa Kao" }] },
+                        { name: "Quận 3", wards: [{ name: "Phường Võ Thị Sáu" }, { name: "Phường 9" }, { name: "Phường 14" }] },
+                        { name: "Quận 7", wards: [{ name: "Phường Tân Phong" }, { name: "Phường Tân Phú" }, { name: "Phường Phú Mỹ" }] },
+                        { name: "Thành phố Thủ Đức", wards: [{ name: "Phường Linh Trung" }, { name: "Phường Thảo Điền" }, { name: "Phường Hiệp Bình Chánh" }] },
+                        { name: "Huyện Bình Chánh", wards: [{ name: "Xã Bình Hưng" }, { name: "Xã Vĩnh Lộc A" }, { name: "Xã Tân Kiên" }] }
+                    ]
+                },
+                {
+                    name: "Hà Nội",
+                    districts: [
+                        { name: "Quận Ba Đình", wards: [{ name: "Phường Điện Biên" }, { name: "Phường Kim Mã" }, { name: "Phường Ngọc Hà" }] },
+                        { name: "Quận Hoàn Kiếm", wards: [{ name: "Phường Hàng Bạc" }, { name: "Phường Hàng Đào" }, { name: "Phường Tràng Tiền" }] },
+                        { name: "Quận Cầu Giấy", wards: [{ name: "Phường Dịch Vọng" }, { name: "Phường Nghĩa Đô" }, { name: "Phường Trung Hòa" }] }
+                    ]
+                },
+                {
+                    name: "Đà Nẵng",
+                    districts: [
+                        { name: "Quận Hải Châu", wards: [{ name: "Phường Hải Châu 1" }, { name: "Phường Bình Hiên" }, { name: "Phường Thạch Thang" }] },
+                        { name: "Quận Sơn Trà", wards: [{ name: "Phường An Hải Bắc" }, { name: "Phường Mân Thái" }, { name: "Phường Nại Hiên Đông" }] }
+                    ]
+                },
+                {
+                    name: "Cần Thơ",
+                    districts: [
+                        { name: "Quận Ninh Kiều", wards: [{ name: "Phường An Cư" }, { name: "Phường Cái Khế" }, { name: "Phường Xuân Khánh" }] },
+                        { name: "Quận Bình Thủy", wards: [{ name: "Phường Bình Thủy" }, { name: "Phường Trà An" }, { name: "Phường Long Hòa" }] }
+                    ]
+                },
+                {
+                    name: "Bình Dương",
+                    districts: [
+                        { name: "Thành phố Thủ Dầu Một", wards: [{ name: "Phường Phú Cường" }, { name: "Phường Hiệp Thành" }, { name: "Phường Phú Hòa" }] },
+                        { name: "Thành phố Dĩ An", wards: [{ name: "Phường Dĩ An" }, { name: "Phường Đông Hòa" }, { name: "Phường Tân Bình" }] }
+                    ]
+                },
+                {
+                    name: "Đồng Nai",
+                    districts: [
+                        { name: "Thành phố Biên Hòa", wards: [{ name: "Phường Tân Phong" }, { name: "Phường Trảng Dài" }, { name: "Phường Quyết Thắng" }] },
+                        { name: "Huyện Long Thành", wards: [{ name: "Thị trấn Long Thành" }, { name: "Xã An Phước" }, { name: "Xã Long Đức" }] }
+                    ]
+                }
+            ];
+
+            let locations = fallbackLocations;
+
+            const selectedProvince = provinceSelect.dataset.selected || provinceSelect.value;
+            const selectedDistrict = districtSelect.dataset.selected || districtSelect.value;
+            const selectedWard = wardSelect.dataset.selected || wardSelect.value;
+
+            const money = value => Number(value || 0).toLocaleString("vi-VN") + " VNĐ";
+            const normalize = value => (value || "").toLowerCase();
+
+            const fillSelect = (select, placeholder, items, selectedValue) => {
+                select.innerHTML = "";
+                select.append(new Option(placeholder, ""));
+                items.forEach(item => {
+                    const option = new Option(item.name, item.name);
+                    option.selected = item.name === selectedValue;
+                    select.append(option);
+                });
+            };
+
+            const getProvince = () => locations.find(item => item.name === provinceSelect.value);
+            const getDistrict = () => getProvince()?.districts?.find(item => item.name === districtSelect.value);
+
+            const fillProvinces = () => {
+                fillSelect(provinceSelect, "Chọn tỉnh/thành phố", locations, selectedProvince);
+                fillDistricts(selectedDistrict, selectedWard);
+                updateTotals();
+            };
+
+            const fillDistricts = (districtValue = "", wardValue = "") => {
+                const districts = getProvince()?.districts || [];
+                fillSelect(districtSelect, "Chọn quận/huyện", districts, districtValue);
+                fillWards(wardValue);
+            };
+
+            const fillWards = (wardValue = "") => {
+                const wards = getDistrict()?.wards || [];
+                fillSelect(wardSelect, "Chọn phường/xã", wards, wardValue);
+            };
+
+            const getShippingFee = () => {
+                const province = normalize(provinceSelect.value);
+
+                if (!province) return 30000;
+                if (province.includes("hồ chí minh") || province.includes("ho chi minh")) return 30000;
+                if (province.includes("bình dương") || province.includes("đồng nai") || province.includes("long an")) return 40000;
+                if (province.includes("bà rịa") || province.includes("tây ninh") || province.includes("tiền giang")) return 50000;
+                if (province.includes("hà nội") || province.includes("đà nẵng") || province.includes("cần thơ") || province.includes("hải phòng") || province.includes("huế")) return 70000;
+                return 90000;
+            };
+
+            const getDiscount = (subtotal, shippingFee) => {
+                const option = couponSelect?.selectedOptions?.[0];
+                if (!option || !option.value) return 0;
+
+                const min = Number(option.dataset.min || 0);
+                const value = Number(option.dataset.value || 0);
+                const type = option.dataset.type;
+
+                if (subtotal < min) return 0;
+                if (type === "Percent") return Math.round(subtotal * value / 100);
+                if (type === "Amount") return Math.min(value, subtotal);
+                if (type === "FreeShip") return shippingFee;
+                return 0;
+            };
+
+            const updateTotals = () => {
+                const subtotal = Number(subtotalEl?.dataset.value || 0);
+                const shippingFee = getShippingFee();
+                const discount = getDiscount(subtotal, shippingFee);
+                const total = Math.max(0, subtotal + shippingFee - discount);
+
+                if (shippingEl) shippingEl.textContent = money(shippingFee);
+                if (discountEl) discountEl.textContent = "-" + money(discount);
+                if (totalEl) totalEl.textContent = money(total);
+            };
+
+            provinceSelect.addEventListener("change", () => {
+                fillDistricts();
+                updateTotals();
+            });
+            districtSelect.addEventListener("change", () => fillWards());
+            couponSelect?.addEventListener("change", updateTotals);
+
+            fetch("https://provinces.open-api.vn/api/?depth=3")
+                .then(response => response.ok ? response.json() : Promise.reject())
+                .then(data => {
+                    locations = data.map(province => ({
+                        name: province.name,
+                        districts: (province.districts || []).map(district => ({
+                            name: district.name,
+                            wards: district.wards || []
+                        }))
+                    }));
+                    fillProvinces();
+                })
+                .catch(fillProvinces);
+        })();
+    </script>
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

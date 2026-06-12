@@ -1,11 +1,15 @@
 @model List<_1473_VTKNgoc_Buoi3.Models.Order>
+@using _1473_VTKNgoc_Buoi3.Models
 
 @{
     ViewData["Title"] = "Quản lý đơn hàng";
     decimal totalRevenue = ViewBag.TotalRevenue ?? 0;
-    decimal productRevenue = ViewBag.ProductRevenue ?? 0;
-    decimal serviceRevenue = ViewBag.ServiceRevenue ?? 0;
-    var orderStatuses = new[] { "Chờ xác nhận", "Đang xử lý", "Đang giao", "Đã nhận", "Đã hủy" };
+    int totalOrders = ViewBag.TotalOrders ?? 0;
+    decimal aov = ViewBag.Aov ?? 0;
+    decimal conversionRate = ViewBag.ConversionRate ?? 0;
+    var currentStatus = ViewBag.Status as string ?? "all";
+    var topProducts = ViewBag.TopProducts as IEnumerable<TopProductViewModel>
+        ?? Enumerable.Empty<TopProductViewModel>();
     var serviceStatuses = new[] { "Chờ xác nhận lịch", "Đã xác nhận", "Đang phục vụ", "Hoàn thành", "Đã hủy" };
 }
 
@@ -14,7 +18,11 @@
         <div>
             <span>Admin Console</span>
             <h1>Quản lý đơn hàng</h1>
-            <p>Theo dõi đơn sản phẩm, lịch đặt dịch vụ, doanh thu và cập nhật trạng thái xử lý cho khách hàng.</p>
+            <p>Theo dõi giao dịch, cập nhật trạng thái vận chuyển, xuất dữ liệu và xem hiệu suất doanh thu.</p>
+        </div>
+        <div class="admin-head-actions">
+            <a class="admin-create-link soft" asp-action="Vouchers">Tạo voucher</a>
+            <a class="admin-create-link" asp-action="ExportOrdersCsv" asp-route-status="@currentStatus">Xuất CSV</a>
         </div>
     </div>
 
@@ -28,27 +36,67 @@
         <div class="alert alert-danger admin-page-alert">@TempData["Error"]</div>
     }
 
-    <div class="admin-revenue-grid">
+    <div class="admin-revenue-grid kpi-grid">
         <article>
             <span>Tổng doanh thu</span>
             <strong>@totalRevenue.ToString("N0") VNĐ</strong>
         </article>
         <article>
-            <span>Doanh thu sản phẩm</span>
-            <strong>@productRevenue.ToString("N0") VNĐ</strong>
+            <span>Tổng đơn hàng</span>
+            <strong>@totalOrders</strong>
         </article>
         <article>
-            <span>Doanh thu dịch vụ</span>
-            <strong>@serviceRevenue.ToString("N0") VNĐ</strong>
+            <span>AOV</span>
+            <strong>@aov.ToString("N0") VNĐ</strong>
         </article>
+        <article>
+            <span>Tỷ lệ chuyển đổi</span>
+            <strong>@conversionRate%</strong>
+        </article>
+    </div>
+
+    <div class="admin-dashboard-grid">
+        <section class="admin-manage-card admin-chart-card">
+            <h2>Xu hướng doanh thu</h2>
+            <canvas id="revenueChart" height="120"></canvas>
+        </section>
+
+        <section class="admin-manage-card top-products-card">
+            <h2>Sản phẩm bán chạy</h2>
+            @if (!topProducts.Any())
+            {
+                <p class="admin-muted">Chưa có dữ liệu sản phẩm.</p>
+            }
+            else
+            {
+                @foreach (var product in topProducts)
+                {
+                    <div>
+                        <strong>@product.Name</strong>
+                        <span>Đã bán @product.Quantity - @product.Revenue.ToString("N0") VNĐ</span>
+                    </div>
+                }
+            }
+        </section>
+    </div>
+
+    <div class="history-filter-tabs admin-order-filters">
+        @foreach (var filter in OrderStatusOptions.Filters)
+        {
+            <a class="@(currentStatus == filter.Value ? "active" : "")"
+               asp-action="Orders"
+               asp-route-status="@filter.Value">
+                @filter.Label
+            </a>
+        }
     </div>
 
     <section class="admin-manage-card">
         @if (!Model.Any())
         {
             <div class="admin-empty">
-                <h2>Chưa có đơn hàng</h2>
-                <p>Các đơn hàng và lịch đặt dịch vụ sau khi khách xác nhận giỏ hàng sẽ xuất hiện tại đây.</p>
+                <h2>Chưa có đơn hàng phù hợp</h2>
+                <p>Thử chọn bộ lọc khác hoặc chờ khách hàng đặt đơn mới.</p>
             </div>
         }
         else
@@ -66,31 +114,55 @@
                 <tbody>
                     @foreach (var order in Model)
                     {
+                        var orderLocked = order.Status == OrderStatusOptions.Delivered
+                            || order.Status == OrderStatusOptions.Cancelled
+                            || order.Status == "Hoàn thành"
+                            || order.Status == "Đã nhận";
+
                         <tr>
                             <td>
                                 <strong>Đơn @order.Id</strong>
                                 <small>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
                             </td>
                             <td>
-                                <strong>@order.CustomerName</strong>
-                                <small>@order.CustomerEmail</small>
-                                @if (!string.IsNullOrWhiteSpace(order.CustomerPhone))
-                                {
-                                    <small>@order.CustomerPhone</small>
-                                }
+                                <div class="admin-customer-card">
+                                    <strong>@order.CustomerName</strong>
+                                    <span><b>Email:</b> @order.CustomerEmail</span>
+                                    @if (!string.IsNullOrWhiteSpace(order.CustomerPhone))
+                                    {
+                                        <span><b>SĐT:</b> @order.CustomerPhone</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(order.CustomerAddress))
+                                    {
+                                        <span><b>Địa chỉ:</b> @order.CustomerAddress</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(order.PaymentMethod))
+                                    {
+                                        <span><b>Thanh toán:</b> @order.PaymentMethod</span>
+                                    }
+                                </div>
                             </td>
                             <td>
                                 <div class="admin-order-items">
                                     @foreach (var item in order.Items)
                                     {
+                                        var serviceLocked = item.ItemStatus == "Hoàn thành" || item.ItemStatus == "Đã hủy";
+
                                         <div class="admin-order-item-row">
-                                            <div>
+                                            <div class="admin-order-product-card">
+                                                <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? "/images/avatar-default.jpg" : item.ImageUrl)" alt="@item.ProductName" />
+                                                <div class="admin-order-product-info">
                                                 <strong>@item.ProductName</strong>
-                                                <span>
+                                                <span class="admin-order-legacy-summary">
                                                     @(item.IsService ? "Dịch vụ" : "Sản phẩm") -
                                                     SL: @item.Quantity -
                                                     @item.Total.ToString("N0") VNĐ
                                                 </span>
+                                                <div class="admin-order-product-meta">
+                                                    <span><b>Loại:</b> @(item.IsService ? "Dịch vụ" : "Sản phẩm")</span>
+                                                    <span><b>Số lượng:</b> @item.Quantity</span>
+                                                    <span><b>Thành tiền:</b> @item.Total.ToString("N0") VNĐ</span>
+                                                </div>
                                                 @if (item.IsService)
                                                 {
                                                     <small>Lịch hẹn: @item.AppointmentAt?.ToString("dd/MM/yyyy HH:mm")</small>
@@ -100,9 +172,10 @@
                                                         <small>Ghi chú: @item.CustomerNote</small>
                                                     }
                                                 }
+                                                </div>
                                             </div>
 
-                                            @if (item.IsService)
+                                            @if (item.IsService && !serviceLocked)
                                             {
                                                 <form asp-action="UpdateServiceStatus" method="post" class="admin-status-form">
                                                     @Html.AntiForgeryToken()
@@ -123,30 +196,41 @@
                                                     <button type="submit">Cập nhật</button>
                                                 </form>
                                             }
+                                            else if (item.IsService)
+                                            {
+                                                <span class="admin-status-final">@item.ItemStatus</span>
+                                            }
                                         </div>
                                     }
                                 </div>
                             </td>
                             <td><strong>@order.TotalAmount.ToString("N0") VNĐ</strong></td>
                             <td>
-                                <form asp-action="UpdateOrderStatus" method="post" class="admin-status-form">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@order.Id" />
-                                    <select name="status">
-                                        @foreach (var status in orderStatuses)
-                                        {
-                                            if (order.Status == status)
+                                @if (orderLocked)
+                                {
+                                    <span class="admin-status-final">@order.Status</span>
+                                }
+                                else
+                                {
+                                    <form asp-action="UpdateOrderStatus" method="post" class="admin-status-form">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@order.Id" />
+                                        <select name="status">
+                                            @foreach (var status in OrderStatusOptions.Statuses)
                                             {
-                                                <option value="@status" selected>@status</option>
+                                                if (order.Status == status)
+                                                {
+                                                    <option value="@status" selected>@status</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@status">@status</option>
+                                                }
                                             }
-                                            else
-                                            {
-                                                <option value="@status">@status</option>
-                                            }
-                                        }
-                                    </select>
-                                    <button type="submit">Lưu</button>
-                                </form>
+                                        </select>
+                                        <button type="submit">Lưu</button>
+                                    </form>
+                                }
                             </td>
                         </tr>
                     }
@@ -155,3 +239,35 @@
         }
     </section>
 </section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (() => {
+            const canvas = document.getElementById("revenueChart");
+            if (!canvas || !window.Chart) {
+                return;
+            }
+
+            new Chart(canvas, {
+                type: "line",
+                data: {
+                    labels: @Html.Raw(ViewBag.RevenueChartLabels ?? "[]"),
+                    datasets: [{
+                        label: "Doanh thu",
+                        data: @Html.Raw(ViewBag.RevenueChartValues ?? "[]"),
+                        borderColor: "#a34216",
+                        backgroundColor: "rgba(163, 66, 22, .12)",
+                        fill: true,
+                        tension: .35
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        })();
+    </script>
+}

@@ -14,6 +14,10 @@ namespace _1473_VTKNgoc_Buoi3.Models
 
         public string? CustomerPhone { get; set; }
 
+        public string? CustomerAddress { get; set; }
+
+        public string? PaymentMethod { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public string Status { get; set; } = "Chờ xác nhận";

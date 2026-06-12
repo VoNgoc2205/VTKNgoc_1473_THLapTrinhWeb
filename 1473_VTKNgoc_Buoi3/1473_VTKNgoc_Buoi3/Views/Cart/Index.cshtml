@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Giỏ hàng";
-    var total = Model.Sum(x => x.Total);
+    var suggestions = ViewBag.Suggestions as List<_1473_VTKNgoc_Buoi3.Models.Product> ?? new();
 }
 
 <section class="cart-page">
@@ -19,6 +19,13 @@
             </div>
         }
 
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger cart-alert">
+                @TempData["Error"]
+            </div>
+        }
+
         @if (!Model.Any())
         {
             <div class="cart-empty">
@@ -28,82 +35,141 @@
         }
         else
         {
-            <table class="cart-table">
-                <thead>
-                    <tr>
-                        <th>Sản phẩm</th>
-                        <th>Giá</th>
-                        <th>Số lượng</th>
-                        <th>Thành tiền</th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+            <form asp-action="Checkout" method="get" class="cart-checkout-form">
+                <table class="cart-table">
+                    <thead>
                         <tr>
-                            <td>
-                                <div class="cart-product">
-                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/avatar-default.jpg" : item.ImageUrl)" />
-                                    <div>
-                                        <strong>@item.ProductName</strong>
-                                        @if (item.IsService)
-                                        {
-                                            <small>
-                                                Lịch hẹn: @item.AppointmentAt?.ToString("dd/MM/yyyy HH:mm") -
-                                                @item.PetName (@item.PetType, @item.PetAge, @item.PetBreed)
-                                            </small>
-                                        }
-                                    </div>
-                                </div>
-                            </td>
-
-                            <td>@item.Price.ToString("N0") VNĐ</td>
-
-                            <td>
-                                @if (item.IsService)
-                                {
-                                    <span class="cart-service-tag">Đã đặt lịch</span>
-                                }
-                                else
-                                {
-                                    <div class="cart-qty">
-                                        <a asp-action="Decrease" asp-route-id="@item.ProductId">-</a>
-                                        <span>@item.Quantity</span>
-                                        <a asp-action="Increase" asp-route-id="@item.ProductId">+</a>
-                                    </div>
-                                }
-                            </td>
-
-                            <td>
-                                <strong>@item.Total.ToString("N0") VNĐ</strong>
-                            </td>
-
-                            <td>
-                                <a class="cart-remove"
-                                   asp-action="Remove"
-                                   asp-route-id="@item.ProductId">
-                                    Xóa
-                                </a>
-                            </td>
+                            <th class="cart-select-col">
+                                <label class="cart-check" title="Chọn tất cả sản phẩm">
+                                    <input id="selectAllCartItems" type="checkbox" checked />
+                                    <span aria-hidden="true"></span>
+                                </label>
+                            </th>
+                            <th>Sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                            <th></th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
 
-            <div class="cart-summary">
-                <a class="cart-clear" asp-action="Clear">Xóa giỏ hàng</a>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="cart-select-col">
+                                    <label class="cart-check" title="Chọn sản phẩm này">
+                                        <input class="cart-item-check"
+                                               type="checkbox"
+                                               name="selectedProductIds"
+                                               value="@item.ProductId"
+                                               checked />
+                                        <span aria-hidden="true"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <div class="cart-product">
+                                        <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/avatar-default.jpg" : item.ImageUrl)" />
+                                        <div>
+                                            <strong>@item.ProductName</strong>
+                                            @if (item.IsService)
+                                            {
+                                                <small>
+                                                    Lịch hẹn: @item.AppointmentAt?.ToString("dd/MM/yyyy HH:mm") -
+                                                    @item.PetName (@item.PetType, @item.PetAge, @item.PetBreed)
+                                                </small>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
 
-                <div>
-                    <span>Tổng tiền</span>
-                    <strong>@total.ToString("N0") VNĐ</strong>
-                    <form asp-action="Checkout" method="post">
-                        @Html.AntiForgeryToken()
-                        <button class="checkout-btn" type="submit">Thanh toán</button>
-                    </form>
+                                <td>@item.Price.ToString("N0") VNĐ</td>
+
+                                <td>
+                                    @if (item.IsService)
+                                    {
+                                        <span class="cart-service-tag">Đã đặt lịch</span>
+                                    }
+                                    else
+                                    {
+                                        <div class="cart-qty">
+                                            <a asp-action="Decrease" asp-route-id="@item.ProductId">-</a>
+                                            <span>@item.Quantity</span>
+                                            <a asp-action="Increase" asp-route-id="@item.ProductId">+</a>
+                                        </div>
+                                    }
+                                </td>
+
+                                <td>
+                                    <strong>@item.Total.ToString("N0") VNĐ</strong>
+                                </td>
+
+                                <td>
+                                    <a class="cart-remove"
+                                       asp-action="Remove"
+                                       asp-route-id="@item.ProductId">
+                                        Xóa
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="cart-actions-row">
+                    <a class="cart-clear" asp-action="Clear">Xóa giỏ hàng</a>
+                    <button class="checkout-btn" type="submit">Thanh toán</button>
                 </div>
-            </div>
+            </form>
+
+            @if (suggestions.Any())
+            {
+                <section class="cart-suggestions">
+                    <h2>Có thể bạn cũng thích</h2>
+                    <div class="cart-suggestion-grid">
+                        @foreach (var product in suggestions)
+                        {
+                            <article>
+                                <img src="@(string.IsNullOrWhiteSpace(product.ImageUrl) ? "/images/avatar-default.jpg" : product.ImageUrl)" alt="@product.Name" />
+                                <div>
+                                    <strong>@product.Name</strong>
+                                    <span>@product.Price.ToString("N0") VNĐ</span>
+                                    <a asp-action="AddToCart" asp-route-id="@product.Id">Thêm vào giỏ</a>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </section>
+            }
         }
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        (() => {
+            const selectAll = document.getElementById("selectAllCartItems");
+            const itemChecks = Array.from(document.querySelectorAll(".cart-item-check"));
+
+            if (!selectAll || itemChecks.length === 0) {
+                return;
+            }
+
+            const syncSelectAll = () => {
+                const checkedCount = itemChecks.filter((item) => item.checked).length;
+                selectAll.checked = checkedCount === itemChecks.length;
+                selectAll.indeterminate = checkedCount > 0 && checkedCount < itemChecks.length;
+            };
+
+            selectAll.addEventListener("change", () => {
+                itemChecks.forEach((item) => {
+                    item.checked = selectAll.checked;
+                });
+                syncSelectAll();
+            });
+
+            itemChecks.forEach((item) => item.addEventListener("change", syncSelectAll));
+            syncSelectAll();
+        })();
+    </script>
+}

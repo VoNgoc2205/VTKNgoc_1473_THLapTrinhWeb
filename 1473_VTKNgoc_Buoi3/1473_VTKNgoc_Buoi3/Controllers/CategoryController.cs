@@ -14,7 +14,6 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
             _categoryRepository = categoryRepository;
         }
 
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(string? q, string? sort)
         {
             var categories = await _categoryRepository.GetAllAsync();

@@ -105,7 +105,8 @@
                 <div class="shop-grid">
                     @foreach (var product in products)
                     {
-                        <article class="shop-card">
+                        <article class="shop-card clickable-product-card"
+                                 data-detail-url="@Url.Action("Display", "Product", new { id = product.Id, type = addRoute })">
                             <a asp-action="Display"
                                asp-route-id="@product.Id"
                                asp-route-type="@addRoute"
@@ -123,24 +124,22 @@
 
                             <div class="shop-card-body">
                                 <small>Danh mục: @(product.Category?.Name ?? "Chưa phân loại")</small>
-                                <h2>@product.Name</h2>
+                                <h2>
+                                    <a asp-action="Display"
+                                       asp-route-id="@product.Id"
+                                       asp-route-type="@addRoute">
+                                        @product.Name
+                                    </a>
+                                </h2>
                                 <p>@product.Description</p>
 
                                 <div class="shop-card-bottom">
                                     <strong>@product.Price.ToString("N0") VNĐ</strong>
                                 </div>
 
-                                <div class="shop-card-actions">
-                                    <a class="detail-btn"
-                                       asp-action="Display"
-                                       asp-route-id="@product.Id"
-                                       asp-route-type="@addRoute">
-                                        <i class="fa-solid fa-eye"></i>
-                                        Chi tiết
-                                    </a>
-
-                                    @if (User.IsInRole("Admin"))
-                                    {
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <div class="shop-card-actions admin-card-actions">
                                         <a class="edit-btn"
                                            asp-action="Update"
                                            asp-route-id="@product.Id"
@@ -156,28 +155,50 @@
                                             <i class="fa-solid fa-trash"></i>
                                             Xóa
                                         </a>
-                                    }
-                                    else if (User.Identity?.IsAuthenticated == true && isService)
-                                    {
-                                        <a class="add-cart-btn"
+                                    </div>
+                                }
+                                else if (User.Identity?.IsAuthenticated == true && isService)
+                                {
+                                    <div class="shop-card-actions">
+                                        <a class="book-service-btn"
                                            asp-controller="Cart"
                                            asp-action="BookService"
                                            asp-route-id="@product.Id">
                                             <i class="fa-solid fa-calendar-check"></i>
                                             Đặt lịch
                                         </a>
-                                    }
-                                    else if (User.Identity?.IsAuthenticated == true && !isService)
-                                    {
-                                        <a class="add-cart-btn"
-                                           asp-controller="Cart"
-                                           asp-action="AddToCart"
-                                           asp-route-id="@product.Id">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                            Thêm vào giỏ
-                                        </a>
-                                    }
-                                </div>
+                                    </div>
+                                }
+                                else if (User.Identity?.IsAuthenticated == true && !isService)
+                                {
+                                    <div class="shop-card-purchase" data-quantity-box>
+                                        <div class="shop-quantity-stepper">
+                                            <button type="button" data-qty-minus aria-label="Giảm số lượng">-</button>
+                                            <input type="number" name="quantity" value="1" min="1" max="99" inputmode="numeric" />
+                                            <button type="button" data-qty-plus aria-label="Tăng số lượng">+</button>
+                                        </div>
+
+                                        <div class="shop-card-actions">
+                                            <form asp-controller="Cart" asp-action="BuyNow" method="get">
+                                                <input type="hidden" name="id" value="@product.Id" />
+                                                <input type="hidden" name="quantity" value="1" data-qty-target />
+                                                <button class="buy-now-btn" type="submit">
+                                                    <i class="fa-solid fa-bolt"></i>
+                                                    Mua ngay
+                                                </button>
+                                            </form>
+
+                                            <form asp-controller="Cart" asp-action="AddToCart" method="get">
+                                                <input type="hidden" name="id" value="@product.Id" />
+                                                <input type="hidden" name="quantity" value="1" data-qty-target />
+                                                <button class="add-cart-btn" type="submit">
+                                                    <i class="fa-solid fa-cart-plus"></i>
+                                                    Thêm vào giỏ
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </article>
                     }
@@ -186,3 +207,40 @@
         </section>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll("[data-quantity-box]").forEach((box) => {
+            const visibleInput = box.querySelector(".shop-quantity-stepper input");
+            const targets = box.querySelectorAll("[data-qty-target]");
+            const sync = () => {
+                const value = Math.min(99, Math.max(1, parseInt(visibleInput.value || "1", 10)));
+                visibleInput.value = value;
+                targets.forEach((target) => target.value = value);
+            };
+
+            box.querySelector("[data-qty-minus]")?.addEventListener("click", () => {
+                visibleInput.value = (parseInt(visibleInput.value || "1", 10) - 1).toString();
+                sync();
+            });
+
+            box.querySelector("[data-qty-plus]")?.addEventListener("click", () => {
+                visibleInput.value = (parseInt(visibleInput.value || "1", 10) + 1).toString();
+                sync();
+            });
+
+            visibleInput.addEventListener("input", sync);
+            sync();
+        });
+
+        document.querySelectorAll(".clickable-product-card").forEach((card) => {
+            card.addEventListener("click", (event) => {
+                if (event.target.closest("a, button, input, form, select, textarea")) {
+                    return;
+                }
+
+                window.location.href = card.dataset.detailUrl;
+            });
+        });
+    </script>
+}

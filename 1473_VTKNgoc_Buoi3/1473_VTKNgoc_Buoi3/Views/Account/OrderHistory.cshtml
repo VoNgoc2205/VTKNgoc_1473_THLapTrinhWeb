@@ -1,14 +1,18 @@
 @model List<_1473_VTKNgoc_Buoi3.Models.Order>
+@using _1473_VTKNgoc_Buoi3.Models
 
 @{
     ViewData["Title"] = "Lịch sử đơn hàng";
+    var currentStatus = ViewBag.Status as string ?? "all";
+    var userOrderNumbers = ViewBag.UserOrderNumbers as Dictionary<int, int>
+        ?? new Dictionary<int, int>();
 }
 
 <section class="account-history-page">
     <div class="account-title">
         <span class="account-kicker">PetLounge Account</span>
         <h1>Lịch sử đơn hàng</h1>
-        <p>Theo dõi các đơn sản phẩm bạn đã đặt và trạng thái giao hàng hiện tại.</p>
+        <p>Theo dõi toàn bộ đơn hàng đã đặt, trạng thái giao hàng và đặt lại nhanh các đơn cũ.</p>
     </div>
 
     @if (TempData["Success"] != null)
@@ -21,11 +25,22 @@
         <div class="alert alert-danger admin-page-alert">@TempData["Error"]</div>
     }
 
+    <div class="history-filter-tabs">
+        @foreach (var item in OrderStatusOptions.Filters)
+        {
+            <a class="@(currentStatus == item.Value ? "active" : "")"
+               asp-action="OrderHistory"
+               asp-route-status="@item.Value">
+                @item.Label
+            </a>
+        }
+    </div>
+
     @if (!Model.Any())
     {
         <div class="history-empty">
-            <h2>Bạn chưa có đơn sản phẩm</h2>
-            <p>Các sản phẩm sau khi đặt hàng sẽ được lưu tại đây.</p>
+            <h2>Không có đơn hàng phù hợp</h2>
+            <p>Thử chọn trạng thái khác hoặc tiếp tục mua sắm thêm sản phẩm cho thú cưng.</p>
             <a asp-controller="Product" asp-action="Index">Mua sắm ngay</a>
         </div>
     }
@@ -35,13 +50,32 @@
             @foreach (var order in Model)
             {
                 var productItems = order.Items.Where(i => !i.IsService).ToList();
-                var canCancel = order.Status == "Chờ xác nhận" || order.Status == "Đang xử lý";
+                var orderLocked = OrderStatusOptions.IsFinal(order.Status);
+                var canCancel = OrderStatusOptions.IsCancelable(order.Status);
+                var isCancelled = OrderStatusOptions.IsCancelled(order.Status);
+                var canReorder = productItems.Any() && orderLocked && !isCancelled;
+                var displayOrderNumber = userOrderNumbers.TryGetValue(order.Id, out var number)
+                    ? number
+                    : order.Id;
 
                 <article class="history-order-card">
                     <div class="history-order-head">
-                        <div>
-                            <strong>Đơn hàng @order.Id</strong>
-                            <span>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                        <div class="history-order-meta">
+                            <strong>Đơn hàng @displayOrderNumber</strong>
+                            <span><b>Ngày đặt:</b> @order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            <span><b>Người nhận:</b> @order.CustomerName</span>
+                            @if (!string.IsNullOrWhiteSpace(order.CustomerPhone))
+                            {
+                                <span><b>SĐT:</b> @order.CustomerPhone</span>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(order.CustomerAddress))
+                            {
+                                <span><b>Địa chỉ:</b> @order.CustomerAddress</span>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(order.PaymentMethod))
+                            {
+                                <span><b>Thanh toán:</b> @order.PaymentMethod</span>
+                            }
                         </div>
                         <em>@order.Status</em>
                     </div>
@@ -60,19 +94,36 @@
                         }
                     </div>
 
-                    <div class="history-order-total">
-                        <span>Tổng tiền</span>
-                        <strong>@productItems.Sum(i => i.Total).ToString("N0") VNĐ</strong>
-                    </div>
+                    <div class="history-order-actions">
+                        <div class="history-order-total">
+                            <span>Tổng tiền</span>
+                            <strong>@order.TotalAmount.ToString("N0") VNĐ</strong>
+                        </div>
 
-                    @if (canCancel)
-                    {
-                        <form asp-action="CancelOrder" method="post" class="history-cancel-form">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@order.Id" />
-                            <button type="submit" onclick="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?')">Hủy đơn hàng</button>
-                        </form>
-                    }
+                        @if (canReorder)
+                        {
+                            <form asp-action="ReorderOrder" method="post" class="history-reorder-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@order.Id" />
+                                <button type="submit">Đặt lại</button>
+                            </form>
+                        }
+
+                        <a class="history-detail-link"
+                           asp-action="OrderDetail"
+                           asp-route-id="@order.Id">
+                            Xem chi tiết
+                        </a>
+
+                        @if (canCancel)
+                        {
+                            <form asp-action="CancelOrder" method="post" class="history-cancel-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@order.Id" />
+                                <button type="submit" onclick="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?')">Hủy đơn hàng</button>
+                            </form>
+                        }
+                    </div>
                 </article>
             }
         </div>

@@ -5,6 +5,12 @@
     var avatar = string.IsNullOrEmpty(Model.AvatarUrl)
         ? "/images/avatar-default.jpg"
         : Model.AvatarUrl;
+    var completedOrderCount = ViewBag.CompletedOrderCount as int? ?? 0;
+    var memberRank = ViewBag.MemberRank as string ?? "Hạng Thành viên Đồng";
+    var nextRankRemaining = 10 - completedOrderCount % 10;
+    var nextRankText = completedOrderCount >= 30
+        ? "Bạn đang ở hạng cao nhất hiện tại."
+        : $"Còn {nextRankRemaining} đơn nữa để lên cấp tiếp theo.";
 }
 
 <section class="account-page-shared">
@@ -28,6 +34,18 @@
                 @TempData["Error"]
             </div>
         }
+
+        <section class="member-reward-card account-member-card">
+            <div>
+                <span>Hạng thành viên hiện tại</span>
+                <strong>@memberRank</strong>
+            </div>
+            <div>
+                <span>Số đơn đã tính hạng</span>
+                <strong>@completedOrderCount đơn</strong>
+                <small>@nextRankText</small>
+            </div>
+        </section>
 
         <form asp-action="Profile"
               method="post"

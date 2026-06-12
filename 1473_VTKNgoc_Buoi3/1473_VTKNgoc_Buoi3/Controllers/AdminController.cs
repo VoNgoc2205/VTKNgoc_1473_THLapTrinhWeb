@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json;
 using _1473_VTKNgoc_Buoi3.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -172,33 +174,90 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
             return RedirectToAction(nameof(Users));
         }
 
-        public async Task<IActionResult> Orders()
+        public async Task<IActionResult> Orders(string status = "all")
         {
-            var orders = await _context.Orders
-                .Include(o => o.Items)
-                .OrderByDescending(o => o.CreatedAt)
-                .ToListAsync();
+            var orders = await BuildOrdersQuery(status).ToListAsync();
+            var allOrders = await _context.Orders.Include(o => o.Items).ToListAsync();
+            var completedOrders = allOrders
+                .Where(o => o.Status == OrderStatusOptions.Delivered || o.Status == "Đã nhận")
+                .ToList();
 
-            ViewBag.TotalRevenue = orders.Sum(o => o.TotalAmount);
-            ViewBag.ProductRevenue = orders
+            ViewBag.Status = status;
+            ViewBag.TotalRevenue = completedOrders.Sum(o => o.TotalAmount);
+            ViewBag.TotalOrders = allOrders.Count;
+            ViewBag.Aov = completedOrders.Any() ? completedOrders.Average(o => o.TotalAmount) : 0;
+            ViewBag.ConversionRate = allOrders.Any()
+                ? Math.Round(completedOrders.Count * 100m / allOrders.Count, 1)
+                : 0;
+            ViewBag.ProductRevenue = completedOrders
                 .SelectMany(o => o.Items)
                 .Where(i => !i.IsService)
                 .Sum(i => i.Total);
-            ViewBag.ServiceRevenue = orders
+            ViewBag.ServiceRevenue = completedOrders
                 .SelectMany(o => o.Items)
                 .Where(i => i.IsService)
                 .Sum(i => i.Total);
 
+            var revenueTrend = completedOrders
+                .GroupBy(o => o.CreatedAt.Date)
+                .OrderBy(g => g.Key)
+                .Select(g => new
+                {
+                    label = g.Key.ToString("dd/MM"),
+                    revenue = g.Sum(o => o.TotalAmount)
+                })
+                .ToList();
+
+            var topProducts = allOrders
+                .SelectMany(o => o.Items)
+                .Where(i => !i.IsService)
+                .GroupBy(i => i.ProductName)
+                .Select(g => new TopProductViewModel
+                {
+                    Name = g.Key,
+                    Quantity = g.Sum(i => i.Quantity),
+                    Revenue = g.Sum(i => i.Total)
+                })
+                .OrderByDescending(x => x.Quantity)
+                .Take(5)
+                .ToList();
+
+            ViewBag.RevenueChartLabels = JsonSerializer.Serialize(revenueTrend.Select(x => x.label));
+            ViewBag.RevenueChartValues = JsonSerializer.Serialize(revenueTrend.Select(x => x.revenue));
+            ViewBag.TopProducts = topProducts;
+
             return View(orders);
+        }
+
+        public async Task<IActionResult> ExportOrdersCsv(string status = "all")
+        {
+            var orders = await BuildOrdersQuery(status).ToListAsync();
+            var csv = new StringBuilder();
+            csv.AppendLine("Ma don,Ngay dat,Khach hang,Email,So dien thoai,Dia chi,Tong tien,Trang thai");
+
+            foreach (var order in orders)
+            {
+                csv.AppendLine(string.Join(",", new[]
+                {
+                    EscapeCsv($"#{order.Id}"),
+                    EscapeCsv(order.CreatedAt.ToString("dd/MM/yyyy HH:mm")),
+                    EscapeCsv(order.CustomerName),
+                    EscapeCsv(order.CustomerEmail),
+                    EscapeCsv(order.CustomerPhone ?? ""),
+                    EscapeCsv(order.CustomerAddress ?? ""),
+                    EscapeCsv(order.TotalAmount.ToString("N0")),
+                    EscapeCsv(order.Status)
+                }));
+            }
+
+            return File(Encoding.UTF8.GetBytes(csv.ToString()), "text/csv", $"petlounge-orders-{DateTime.Now:yyyyMMddHHmm}.csv");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateOrderStatus(int id, string status)
         {
-            var allowedStatuses = new[] { "Chờ xác nhận", "Đang xử lý", "Đang giao", "Đã nhận", "Đã hủy" };
-
-            if (!allowedStatuses.Contains(status))
+            if (!OrderStatusOptions.Statuses.Contains(status))
             {
                 TempData["Error"] = "Trạng thái đơn hàng không hợp lệ.";
                 return RedirectToAction(nameof(Orders));
@@ -242,6 +301,51 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
             TempData["Success"] = $"Đã cập nhật lịch dịch vụ #{item.Id}.";
 
             return RedirectToAction(nameof(Orders));
+        }
+
+        public IActionResult Vouchers()
+        {
+            ViewBag.Vouchers = VoucherStore.GetAll();
+            return View(new Voucher());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Vouchers(Voucher model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Vouchers = VoucherStore.GetAll();
+                return View(model);
+            }
+
+            VoucherStore.Save(model);
+            TempData["Success"] = $"Đã lưu voucher {model.Code.ToUpperInvariant()}.";
+            return RedirectToAction(nameof(Vouchers));
+        }
+
+        private IQueryable<Order> BuildOrdersQuery(string status)
+        {
+            var ordersQuery = _context.Orders
+                .Include(o => o.Items)
+                .OrderByDescending(o => o.CreatedAt)
+                .AsQueryable();
+
+            return status switch
+            {
+                "pending" => ordersQuery.Where(o => o.Status == OrderStatusOptions.Pending || o.Status == "Đã xác nhận"),
+                "processing" => ordersQuery.Where(o => o.Status == OrderStatusOptions.Processing),
+                "shipped" => ordersQuery.Where(o => o.Status == OrderStatusOptions.Shipped || o.Status == "Đã gửi hàng"),
+                "shipping" => ordersQuery.Where(o => o.Status == OrderStatusOptions.Shipping || o.Status == "Đang giao"),
+                "delivered" => ordersQuery.Where(o => o.Status == OrderStatusOptions.Delivered || o.Status == "Đã nhận"),
+                "cancelled" => ordersQuery.Where(o => o.Status == OrderStatusOptions.Cancelled),
+                _ => ordersQuery
+            };
+        }
+
+        private static string EscapeCsv(string value)
+        {
+            return $"\"{value.Replace("\"", "\"\"")}\"";
         }
     }
 }

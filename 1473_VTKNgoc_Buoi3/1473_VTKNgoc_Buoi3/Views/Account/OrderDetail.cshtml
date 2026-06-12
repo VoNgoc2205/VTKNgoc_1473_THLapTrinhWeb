@@ -1,0 +1,84 @@
+@model _1473_VTKNgoc_Buoi3.Models.OrderDetailViewModel
+
+@{
+    var displayOrderNumber = Model.UserOrderNumber > 0 ? Model.UserOrderNumber : Model.Order.Id;
+    ViewData["Title"] = $"Chi tiết đơn hàng {displayOrderNumber}";
+    var order = Model.Order;
+    var productItems = order.Items.Where(i => !i.IsService).ToList();
+    var subtotal = productItems.Sum(i => i.Total);
+    var shippingFee = Math.Max(0, order.TotalAmount - subtotal);
+    var addressParts = (order.CustomerAddress ?? "")
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .Where(part => !part.Contains("@"))
+        .ToList();
+    var displayAddress = addressParts.Any()
+        ? string.Join(", ", addressParts)
+        : order.CustomerAddress;
+}
+
+<section class="account-history-page order-detail-page">
+    <a class="order-detail-back-link" asp-action="OrderHistory">
+        <i class="fa-solid fa-arrow-left"></i>
+        Quay lại
+    </a>
+
+    <div class="account-title">
+        <span class="account-kicker">PetLounge Order</span>
+        <h1>Chi tiết đơn hàng @displayOrderNumber</h1>
+        <p>Xem hóa đơn, thông tin giao hàng và trạng thái hiện tại của đơn hàng.</p>
+    </div>
+
+    <section class="order-detail-card">
+        <div class="order-detail-top">
+            <div class="order-detail-summary-card">
+                <div class="history-order-head order-detail-head">
+                    <div class="history-order-meta">
+                        <strong>Đơn hàng @displayOrderNumber</strong>
+                        <span><b>Ngày đặt:</b> @order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <em>@order.Status</em>
+                </div>
+            </div>
+
+            <aside class="order-customer-card">
+                <h2>Thông tin khách hàng</h2>
+                <span><b>Người nhận:</b> @order.CustomerName</span>
+                <span><b>Email:</b> @order.CustomerEmail</span>
+                <span><b>SĐT:</b> @order.CustomerPhone</span>
+                <span><b>Địa chỉ:</b> @displayAddress</span>
+                <span><b>Thanh toán:</b> @order.PaymentMethod</span>
+            </aside>
+        </div>
+
+        <h2>Hóa đơn chi tiết</h2>
+        <div class="history-order-items">
+            @foreach (var item in productItems)
+            {
+                <div>
+                    <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? "/images/avatar-default.jpg" : item.ImageUrl)" alt="@item.ProductName" />
+                    <div>
+                        <strong>@item.ProductName</strong>
+                        <span>@item.Quantity x @item.Price.ToString("N0") VNĐ</span>
+                    </div>
+                    <b>@item.Total.ToString("N0") VNĐ</b>
+                </div>
+            }
+        </div>
+
+        <div class="order-detail-price-summary">
+            <div>
+                <span>Tổng tiền hàng</span>
+                <strong>@subtotal.ToString("N0") VNĐ</strong>
+            </div>
+            <div>
+                <span>Phí vận chuyển</span>
+                <strong>@shippingFee.ToString("N0") VNĐ</strong>
+            </div>
+
+            <div class="history-order-total">
+                <span>Tổng thanh toán</span>
+                <strong>@order.TotalAmount.ToString("N0") VNĐ</strong>
+            </div>
+        </div>
+    </section>
+</section>
