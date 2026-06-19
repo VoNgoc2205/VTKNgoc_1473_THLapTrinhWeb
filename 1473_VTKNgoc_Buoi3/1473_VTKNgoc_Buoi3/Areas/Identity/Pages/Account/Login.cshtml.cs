@@ -8,10 +8,14 @@ namespace _1473_VTKNgoc_Buoi3.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager)
+        public LoginModel(
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -41,6 +45,13 @@ namespace _1473_VTKNgoc_Buoi3.Areas.Identity.Pages.Account
 
             if (result.Succeeded)
             {
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return LocalRedirect("~/Admin");
+                }
+
                 return LocalRedirect("~/");
             }
 

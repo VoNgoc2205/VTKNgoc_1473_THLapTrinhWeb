@@ -15,6 +15,11 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
 
         public IActionResult Index()
         {
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
             return View();
         }
 

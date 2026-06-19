@@ -22,6 +22,12 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> Index()
+        {
+            await LoadRevenueDashboardAsync();
+            return View();
+        }
+
         public async Task<IActionResult> Users()
         {
             var users = await _userManager.Users
@@ -341,6 +347,64 @@ namespace _1473_VTKNgoc_Buoi3.Controllers
                 "cancelled" => ordersQuery.Where(o => o.Status == OrderStatusOptions.Cancelled),
                 _ => ordersQuery
             };
+        }
+
+        private async Task LoadRevenueDashboardAsync()
+        {
+            var allOrders = await _context.Orders.Include(o => o.Items).ToListAsync();
+            var completedOrders = allOrders
+                .Where(o => OrderStatusOptions.IsFinal(o.Status) && !OrderStatusOptions.IsCancelled(o.Status))
+                .ToList();
+
+            var revenueTrend = completedOrders
+                .GroupBy(o => o.CreatedAt.Date)
+                .OrderBy(g => g.Key)
+                .Select(g => new
+                {
+                    label = g.Key.ToString("dd/MM"),
+                    revenue = g.Sum(o => o.TotalAmount)
+                })
+                .ToList();
+
+            var topProducts = allOrders
+                .SelectMany(o => o.Items)
+                .Where(i => !i.IsService)
+                .GroupBy(i => i.ProductName)
+                .Select(g => new TopProductViewModel
+                {
+                    Name = g.Key,
+                    Quantity = g.Sum(i => i.Quantity),
+                    Revenue = g.Sum(i => i.Total)
+                })
+                .OrderByDescending(x => x.Quantity)
+                .ThenByDescending(x => x.Revenue)
+                .Take(6)
+                .ToList();
+
+            ViewBag.TotalRevenue = completedOrders.Sum(o => o.TotalAmount);
+            ViewBag.TotalOrders = allOrders.Count;
+            ViewBag.CompletedOrders = completedOrders.Count;
+            ViewBag.PendingOrders = allOrders.Count(o => !OrderStatusOptions.IsFinal(o.Status));
+            ViewBag.CancelledOrders = allOrders.Count(o => OrderStatusOptions.IsCancelled(o.Status));
+            ViewBag.Aov = completedOrders.Any() ? completedOrders.Average(o => o.TotalAmount) : 0;
+            ViewBag.ConversionRate = allOrders.Any()
+                ? Math.Round(completedOrders.Count * 100m / allOrders.Count, 1)
+                : 0;
+            ViewBag.ProductRevenue = completedOrders
+                .SelectMany(o => o.Items)
+                .Where(i => !i.IsService)
+                .Sum(i => i.Total);
+            ViewBag.ServiceRevenue = completedOrders
+                .SelectMany(o => o.Items)
+                .Where(i => i.IsService)
+                .Sum(i => i.Total);
+            ViewBag.RecentOrders = allOrders
+                .OrderByDescending(o => o.CreatedAt)
+                .Take(5)
+                .ToList();
+            ViewBag.RevenueChartLabels = JsonSerializer.Serialize(revenueTrend.Select(x => x.label));
+            ViewBag.RevenueChartValues = JsonSerializer.Serialize(revenueTrend.Select(x => x.revenue));
+            ViewBag.TopProducts = topProducts;
         }
 
         private static string EscapeCsv(string value)
