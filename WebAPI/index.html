@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý sản phẩm</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2b4c7e;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr) auto;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        input {
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2b4c7e;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #btnAdd {
+            background: #2b4c7e;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        th {
+            background: #2b4c7e;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f0f4ff;
+        }
+
+        .price {
+            color: #e67e22;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Quản lý sản phẩm PetLounge</h1>
+
+            <div class="form-grid">
+                <input id="name" placeholder="Tên sản phẩm">
+                <input id="price" type="number" placeholder="Giá">
+                <input id="description" placeholder="Mô tả">
+                <input id="imageUrl" placeholder="Ảnh">
+                <input id="categoryId" type="number" placeholder="Mã danh mục">
+                <button id="btnAdd">Thêm</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Giá</th>
+                        <th>Mô tả</th>
+                        <th>Ảnh</th>
+                        <th>Danh mục</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="productList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
